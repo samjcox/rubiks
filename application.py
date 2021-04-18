@@ -16,9 +16,6 @@ from functools import wraps
 
 # ?!?!?!? check if any of the above are redundant.
 
-
-
-
 # Configure application
 app = Flask(__name__)
 
@@ -44,7 +41,6 @@ Session(app)
 
 # Configure CS50 library to use SQLite database
 db = SQL("sqlite:///rubiks.db")
-
 
 def login_required(f):
     @wraps(f)
