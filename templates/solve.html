@@ -1,0 +1,205 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Solve
+{% endblock %}
+
+{% block main %}
+
+
+    <h2>Solve your cube</h2>
+    <p>You are currently solving Cube ID {{ session["current_cube_id"] }}.</p>
+    <p>You are currently at stage {{ progress }} of 8.  This is called the ???????? stage.</p>
+    <div class="progress" style="height: 20px;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ ((progress / 8) * 100) | int}}%" aria-valuenow="{{ ((progress / 8) * 100) | int}}" aria-valuemin="0" aria-valuemax="100">{{ ((progress / 8) * 100) | int}}%</div>
+    </div>
+    <p>It will take ??? moves to solve this cube using the "standard/human" method.</p>
+
+    <p>ADD LEGEND FOR WHAT NOTATION MEANS WHAT MOVE.</p>
+
+    <div class="card-deck">
+        <div class="card">
+            <div class="card-header">
+                <h5 style="text-align: center;">Cube <b>Before</b> Moves Made</h5>
+            </div>
+            <div class="card-body">
+                <div class="view-cube-layout">
+                    <!-- Top left blank space -->
+                    <div class="view-cube-blank-face"></div>
+                    <!-- Back (green centre) face -->
+                    <div class="view-cube-face">
+                            {% for square in squares[0:9] %}
+                                <div id={{ square }} name={{ square }} class="{{ cube[square] }} view-cube-square">{{ cube[square][:1] }}</div>
+                            {% endfor %}
+                    </div>
+                    <!-- Top right blank space -->
+                    <div class="view-cube-blank-face"></div>
+                    <!-- Left (orange centre) face: -->
+                    <div class="view-cube-face">
+                        {% for square in squares[9:18] %}
+                                <div id={{ square }} name={{ square }} class="{{ cube[square] }} view-cube-square">{{ cube[square][:1] }}</div>
+                        {% endfor %}
+                    </div>
+                    <!-- Top (Yellow centre) face: -->
+                    <div class="view-cube-face">
+                        {% for square in squares[18:27] %}
+                                <div id={{ square }} name={{ square }} class="{{ cube[square] }} view-cube-square">{{ cube[square][:1] }}</div>
+                        {% endfor %}
+                    </div>
+                    <!-- Right (red centre) face: -->
+                    <div class="view-cube-face">
+                        {% for square in squares[27:36] %}
+                                <div id={{ square }} name={{ square }} class="{{ cube[square] }} view-cube-square">{{ cube[square][:1] }}</div>
+                        {% endfor %}
+                    </div>
+                     <!-- Middle left blank space -->
+                    <div class="view-cube-blank-face"></div>
+                    <!-- Front (blue centre) face: -->
+                    <div class="view-cube-face">
+                        {% for square in squares[36:45] %}
+                                <div id={{ square }} name={{ square }} class="{{ cube[square] }} view-cube-square">{{ cube[square][:1] }}</div>
+                        {% endfor %}
+                    </div>
+                     <!-- Middle right blank space -->
+                    <div class="view-cube-blank-face"></div>
+
+                    <!-- Bottom left blank space -->
+                    <div class="view-cube-blank-face"></div>
+                    <!-- Bottom (white centre) face: -->
+                    <div class="view-cube-face">
+                        {% for square in squares[45:54] %}
+                                <div id={{ square }} name={{ square }} class="{{ cube[square] }} view-cube-square">{{ cube[square][:1] }}</div>
+                        {% endfor %}
+                    </div>
+                    <!-- Bottom right blank space -->
+                    <div class="view-cube-blank-face"></div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h5 style="text-align: center;">Moves Required</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                {% set characters_per_row = 5 %}
+                {% set rows = ((next_actions_list| length) / characters_per_row) | int %}
+                {% set final_row_characters = (next_actions_list | length) % characters_per_row %}
+                {% if final_row_characters > 0 %}
+                    {% set rows = rows + 1 %}
+                {% endif %}
+                {% for row in range(rows) %}
+                    {% set starting_character = row * characters_per_row %}
+                    {{ row + 1 }}:
+                    {% for action in next_actions_list[starting_character:(starting_character + characters_per_row)] %}
+                        {{ action }}
+                    {% endfor %}
+                    </br>
+                {% endfor %}
+                </p>
+            </div>
+            <div class="card-footer">
+
+                Click Here for Moves Legend
+
+
+
+
+                <ul class="no-bullet-list">
+                    <li>U = top face clockwise.</li>
+                    <li>U' = top face anti-clockwise.</li>
+                    <li>F = front face clockwise.</li>
+                    <li>F' = front face anti-clockwise.</li>
+                    <li>R = right face clockwise.</li>
+                    <li>R' = right face anti-clockwise.</li>
+                    <li>L = left face clockwise.</li>
+                    <li>L' = left face anti-clockwise.</li>
+
+                </ul>
+
+            </div>
+
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h5 style="text-align: center;">Cube <b>After</b> Moves Made</h5>
+            </div>
+            <div class="card-body">
+                <div class="view-cube-layout">
+                    <!-- Top left blank space -->
+                    <div class="view-cube-blank-face"></div>
+                    <!-- Back (green centre) face -->
+                    <div class="view-cube-face">
+                            {% for square in squares[0:9] %}
+                                <div id={{ square }} name={{ square }} class="{{ next_cube[square] }} view-cube-square">{{ next_cube[square][:1] }}</div>
+                            {% endfor %}
+                    </div>
+                    <!-- Top right blank space -->
+                    <div class="view-cube-blank-face"></div>
+                    <!-- Left (orange centre) face: -->
+                    <div class="view-cube-face">
+                        {% for square in squares[9:18] %}
+                                <div id={{ square }} name={{ square }} class="{{ next_cube[square] }} view-cube-square">{{ next_cube[square][:1] }}</div>
+                        {% endfor %}
+                    </div>
+                    <!-- Top (Yellow centre) face: -->
+                    <div class="view-cube-face">
+                        {% for square in squares[18:27] %}
+                                <div id={{ square }} name={{ square }} class="{{ next_cube[square] }} view-cube-square">{{ next_cube[square][:1] }}</div>
+                        {% endfor %}
+                    </div>
+                    <!-- Right (red centre) face: -->
+                    <div class="view-cube-face">
+                        {% for square in squares[27:36] %}
+                                <div id={{ square }} name={{ square }} class="{{ next_cube[square] }} view-cube-square">{{ next_cube[square][:1] }}</div>
+                        {% endfor %}
+                    </div>
+                     <!-- Middle left blank space -->
+                    <div class="view-cube-blank-face"></div>
+
+                    <!-- Front (blue centre) face: -->
+                    <div class="view-cube-face">
+                        {% for square in squares[36:45] %}
+                                <div id={{ square }} name={{ square }} class="{{ next_cube[square] }} view-cube-square">{{ next_cube[square][:1] }}</div>
+                        {% endfor %}
+                    </div>
+                     <!-- Middle right blank space -->
+                    <div class="view-cube-blank-face"></div>
+
+                    <!-- Bottom left blank space -->
+                    <div class="view-cube-blank-face"></div>
+                    <!-- Bottom (white centre) face: -->
+                    <div class="view-cube-face">
+                        {% for square in squares[45:54] %}
+                                <div id={{ square }} name={{ square }} class="{{ next_cube[square] }} view-cube-square">{{ next_cube[square][:1] }}</div>
+                        {% endfor %}
+                    </div>
+                    <!-- Bottom right blank space -->
+                    <div class="view-cube-blank-face"></div>
+                </div>
+             </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <br/>
+    <div class="text_and_button_grid">
+        <div><p>After making the moves (or if you've got lost along the way) if your cube does not look like the image on the right, click here to adjust this to suit your current cube: </div>
+        <div><a href=amend><button class="btn btn-primary" type="button">Oops, Amend.</button></a></p></div>
+        <div><p>If your cube does match this, then please click here to continue to the next stage: </div>
+        <div><a href=next_stage><button class="btn btn-primary" onclick="loading_on()" type="button">Correct, Continue.</button></a></p></div>
+        <div><p>Just for kicks, you can click here to make 10,000 random moves to see if the cube would accidentally be solved (hint: it won't!).</p></div>
+        <div><a href=solve_randomly><button class="btn btn-primary" onclick="loading_on()"; type="button">Make up to 10,000 random moves.</button></a></div>
+    </div>
+
+
+
+{% endblock %}

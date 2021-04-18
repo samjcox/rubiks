@@ -1,0 +1,189 @@
+
+
+.text_and_button_grid {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: auto auto;
+}
+
+.next_steps_grid {
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: auto auto auto;
+}
+
+.no-bullet-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Loading Overlay */
+    #loading {
+        position: fixed;
+        display: none;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    }
+
+    #loading_text {
+        position: absolute;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        color: white;
+        transform: translate(-50%,-50%);
+        -ms-transform: translate(-50%,-50%);
+    }
+
+    #loading_main_text {
+        font-size: 50px;
+    }
+
+    #loading_sub_text {
+        font-size: 20px;
+    }
+
+    .loader {
+
+    }
+
+/* Amend / enter cube formatting */
+    .enter-cube-layout {
+        display: grid;
+        grid-template-rows: auto auto auto auto;
+        grid-template-columns: 266px 266px 266px;
+    }
+
+    .enter-cube-blank-face {
+        background-color: white;
+        margin: 10px;
+    }
+
+    .enter-cube-face {
+        display: grid;
+        grid-template-columns: 75px 75px 75px;
+        grid-template-rows: 75px 75px 75px;
+        padding: 5px;
+        background-color: black;
+        margin: 10px;
+        grid-gap: 5px;
+    }
+
+    .enter-cube-square {
+        border: 0px;
+        text-transform: capitalize;
+    }
+
+/* View cube formatting */
+    .card-body {
+        display: flex;
+        justify-content: center;
+    }
+
+    .view-cube-layout {
+        display: grid;
+        grid-template-rows: 74px 74px 74px 74px;
+        grid-template-columns: 74px 74px 74px;
+    }
+
+    .view-cube-blank-face {
+        background-color: white;
+        margin: 3px;
+    }
+
+    .view-cube-face {
+        display: grid;
+        grid-template-columns: 20px 20px 20px;
+        grid-template-rows: 20px 20px 20px;
+        padding: 2px;
+        background-color: black;
+        margin: 3px;
+        grid-gap: 2px;
+    }
+
+    .view-cube-square {
+        border: 0px;
+        text-transform: capitalize;
+        text-align: center;
+        font-size: 13px;
+        padding: 0px; /* Use this to centre the text vertically, once size of boxes is finalised */
+    }
+
+/* Home table */
+    #home_cube_table {
+        height: 400px;
+        overflow: scroll;
+    }
+
+
+/* Cube & list colours */
+    option[value=red] {
+        background-color: red;
+    }
+
+    .red {
+        background: red;
+        color: black;
+    }
+
+    option[value=green] {
+        background-color: green;
+    }
+
+    .green {
+        background: green;
+        color: black;
+    }
+
+    option[value=blue] {
+        background-color: blue;
+        color: white;
+    }
+
+    .blue {
+        background: blue;
+        color: white;
+    }
+
+    option[value=yellow] {
+        background-color: yellow;
+    }
+
+    .yellow {
+        background: yellow;
+        color: black;
+    }
+
+    option[value=white] {
+        background-color: white;
+    }
+
+    .white {
+        background: white;
+        color: black;
+    }
+
+    option[value=orange] {
+        background-color: orange;
+    }
+
+    .orange {
+        background: orange;
+        color: black;
+    }
+
+    option[value=grey] {
+        background-color: grey;
+    }
+
+    .grey {
+        background: grey;
+        color: black;
+    }
