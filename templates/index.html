@@ -6,6 +6,16 @@
 
 {% block main %}
 
+    <script>
+        function confirm_delete_on() {
+            document.getElementById("confirm_delete").style.display = "block";
+        }
+
+        function confirm_delete_off() {
+            document.getElementById("confirm_delete").style.display = "none";
+        }
+    </script>
+
     <h1>Welcome</h1>
     <div class="row">
         <div class="col">
@@ -89,8 +99,16 @@
         </table>
         </div>
     </br>
-    <p>To delete all existing cubes from your account (as listed above), click here: <a href=#><button class="btn btn-danger" onclick="loading_on()" type="button">Delete All Cubes</button></a></p>
+    <p>To delete all existing cubes from your account (as listed above), click here: <button class="btn btn-danger" onclick="confirm_delete_on()" type="button">Delete All Cubes</button></p>
 
-
+    <!-- Overlay for Confirm Delete All Cubes -->
+    <div class="overlay" id="confirm_delete" onclick="confirm_delete_off()">
+        <div class="overlay_text">
+            <p class="overlay_main_text">Delete all cubes?</p>
+            <p class="overlay_sub_text">Are you sure you want to delete all cubes on your account?</p>
+            <a href="/delete_all_cubes"><button class="btn btn-danger" onclick="confirm_delete_off()" type="button">Delete All Cubes</button></a>
+            <button class="btn btn-primary" onclick="confirm_delete_off()" type="button">Cancel</button></a>
+        </div>
+    </div>
 
 {% endblock %}

@@ -188,6 +188,20 @@ def delete_cube():
     return redirect("/")
 
 
+# Route to delete all users existing cubes
+@app.route("/delete_all_cubes", methods=["GET"])
+@login_required
+def delete_all_cubes():
+
+    db.execute("DELETE FROM cubes WHERE user_id = ?", session["user_id"])
+
+    # Set current cube to zero.
+    session["current_cube_id"] = 0
+
+    flash("All your cubes have now been successfully deleted.")
+    return redirect("/")
+
+
 # Create blank cube and store ID
 def create_cube():
 
@@ -323,8 +337,7 @@ def random_move(cube):
         cube = helpers.move_da(cube)
     return cube
 
-
-# Route to randomise a solved cube to ensure it can actually be solved.
+# Route to provide random moves to user, for user to randomise their own real-life cube.
 @app.route("/randomise_user_cube")
 @login_required
 def randomise_user_cube():
@@ -346,7 +359,7 @@ def randomise_user_cube():
     return render_template("randomiser.html", random_moves_list=random_moves_list)
 
 
-# Route to provide random moves to user, for user to randomise their own real-life cube.
+# Route to randomise a solved cube to ensure it can actually be solved.
 @app.route("/random_cube")
 @login_required
 def random_cube():
