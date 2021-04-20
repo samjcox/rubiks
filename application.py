@@ -167,9 +167,17 @@ def index():
     # Display previously entered cubes.
     users_cubes = db.execute("SELECT * FROM cubes WHERE user_id = ? ORDER BY id DESC", session["user_id"])
 
-        # ?!?! Display current status (stage of solving) of cube in table.
-
     return render_template("index.html", users_cubes=users_cubes)
+
+
+# Route to display only loading table.
+@app.route("/load_page", methods=["GET"])
+@login_required
+def load_page():
+    # Display previously entered cubes.
+    users_cubes = db.execute("SELECT * FROM cubes WHERE user_id = ? ORDER BY id DESC", session["user_id"])
+
+    return render_template("load.html", users_cubes=users_cubes)
 
 
 # Route to delete existing cube.

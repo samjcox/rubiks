@@ -131,9 +131,18 @@
         padding: 0px; /* Use this to centre the text vertically, once size of boxes is finalised */
     }
 
-/* Home table */
+/* Cube tables */
+    .cube_tables {
+        overflow: scroll;
+    }
+
     #home_cube_table {
-        height: 400px;
+        height: 300px;
+        overflow: scroll;
+    }
+
+    #load_cube_table {
+        height: 500px;
         overflow: scroll;
     }
 
