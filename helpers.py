@@ -817,6 +817,46 @@ def next_action():
     elif progress == 8:
         return next_actions_list
 
+
+def improve_efficiency(next_actions_list):
+    # Improve efficiency of moves in next_actions_list.
+    # Repeat until no inefficiencies found.
+    inefficiencies = True
+    while inefficiencies == True:
+        print("SOLVE - start loop to remove inefficiencies.")
+        inefficiencies = False
+        # Exchange triple moves with one of the opposite move.
+        move_to_replace_triples = {"F":"F'", "F'":"F", "U":"U'", "U'":"U", "L":"L'", "L'":"L", "R":"R'", "R'":"R", "D":"D'", "D'":"D", "B":"B'", "B'":"B"}
+        list_length = len(next_actions_list)
+        index = 0
+        while index < (list_length - 3):
+            if ((next_actions_list[index] == next_actions_list[index + 1]) and (next_actions_list[index] == next_actions_list[index + 2])):
+                print("SOLVE - TRIPLE MOVES FOUND & REPLACED: " + next_actions_list[index])
+                next_actions_list[index] = move_to_replace_triples[next_actions_list[index]]
+                next_actions_list.pop(index + 1)
+                next_actions_list.pop(index + 1)
+                list_length = list_length - 2
+                inefficiencies = True
+            index = index + 1
+
+        # Remove opposite moves directly one after the other.
+        opposite_moves = {"F":"F'", "F'":"F", "U":"U'", "U'":"U", "L":"L'", "L'":"L", "R":"R'", "R'":"R", "D":"D'", "D'":"D", "B":"B'", "B'":"B"}
+        list_length = len(next_actions_list)
+        index = 0
+        while index < (list_length - 2):
+            if next_actions_list[index + 1] == opposite_moves[next_actions_list[index]]:
+                print("SOLVE - OPPOSITE MOVES FOUND & REMOVED")
+                next_actions_list.pop(index)
+                next_actions_list.pop(index)
+                list_length = list_length - 2
+                inefficiencies = True
+            index = index + 1
+
+    print("SOLVE - NEXT ACTIONS LIST UPDATED.")
+
+    return next_actions_list
+
+
 # INDIVIDUAL CUBE MOVES BELOW
 
 # R (clockwise)

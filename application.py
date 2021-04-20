@@ -2,6 +2,7 @@ import os
 import datetime
 import random
 import helpers
+import config
 
 from config import squares
 from config import solved_cube
@@ -283,7 +284,6 @@ def solve_randomly():
             for square in squares:
                 session["cube"][square] = cube[square]
             return redirect("/solve")
-            # return render_template("solved.html", move_count=move_count)
         else:
             move_count = move_count + 1
             cube = random_move(cube)
@@ -292,12 +292,11 @@ def solve_randomly():
 
     flash(str(move_count) + " randomly picked moves were made.")
     return redirect("/solve")
-    # ?!?!? return render_template("solved.html", move_count=move_count)
 
 
 # Select random cube move.
 def random_move(cube):
-    y = random.randint(0, 12)
+    y = random.randint(0, 11)
     if y == 0:
         cube = helpers.move_rc(cube)
     elif y == 1:
@@ -326,9 +325,32 @@ def random_move(cube):
 
 
 # Route to randomise a solved cube to ensure it can actually be solved.
+@app.route("/randomise_user_cube")
+@login_required
+def randomise_user_cube():
+
+    # Define number of random moves to make.
+    random_moves = 20
+
+    random_moves_list = []
+    move_count = len(random_moves_list)
+
+    while move_count < random_moves:
+        y = random.randint(0, 11)
+        move = config.possible_moves[y]
+        random_moves_list.append(move)
+        random_moves_list = helpers.improve_efficiency(random_moves_list)
+        move_count = len(random_moves_list)
+
+    # Return list of random moves.
+    return render_template("randomiser.html", random_moves_list=random_moves_list)
+
+
+# Route to provide random moves to user, for user to randomise their own real-life cube.
 @app.route("/random_cube")
 @login_required
 def random_cube():
+
     # Load solved cube.
     cube = solved_cube
 
@@ -478,39 +500,7 @@ def solve():
     next_actions_list = helpers.next_action()
 
     # Improve efficiency of moves in next_actions_list.
-    # Repeat until no inefficiencies found.
-    inefficiencies = True
-    while inefficiencies == True:
-        print("SOLVE - start loop to remove inefficiencies.")
-        inefficiencies = False
-        # Exchange triple moves with one of the opposite move.
-        move_to_replace_triples = {"F":"F'", "F'":"F", "U":"U'", "U'":"U", "L":"L'", "L'":"L", "R":"R'", "R'":"R", "D":"D'", "D'":"D", "B":"B'", "B'":"B"}
-        list_length = len(next_actions_list)
-        index = 0
-        while index < (list_length - 3):
-            if ((next_actions_list[index] == next_actions_list[index + 1]) and (next_actions_list[index] == next_actions_list[index + 2])):
-                print("SOLVE - TRIPLE MOVES FOUND & REPLACED: " + next_actions_list[index])
-                next_actions_list[index] = move_to_replace_triples[next_actions_list[index]]
-                next_actions_list.pop(index + 1)
-                next_actions_list.pop(index + 1)
-                list_length = list_length - 2
-                inefficiencies = True
-            index = index + 1
-
-        # Remove opposite moves directly one after the other.
-        opposite_moves = {"F":"F'", "F'":"F", "U":"U'", "U'":"U", "L":"L'", "L'":"L", "R":"R'", "R'":"R", "D":"D'", "D'":"D", "B":"B'", "B'":"B"}
-        list_length = len(next_actions_list)
-        index = 0
-        while index < (list_length - 2):
-            if next_actions_list[index + 1] == opposite_moves[next_actions_list[index]]:
-                print("SOLVE - OPPOSITE MOVES FOUND & REMOVED")
-                next_actions_list.pop(index)
-                next_actions_list.pop(index)
-                list_length = list_length - 2
-                inefficiencies = True
-            index = index + 1
-
-    print("SOLVE - NEXT ACTIONS LIST UPDATED.")
+    next_actions_list = helpers.improve_efficiency(next_actions_list)
 
     return render_template("solve.html", next_actions_list=next_actions_list, squares=squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=progress)
 

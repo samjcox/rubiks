@@ -90,3 +90,5 @@ face_clockwise_moves = {
     'orange':("R", "R", "U", "B'", "F", "R", "R", "F'", "B", "U", "R", "R")
 }
 
+# List of possible moves.
+possible_moves = ["F", "F'", "U", "U'", "R", "R'", "L", "L'", "B", "B'", "D", "D'"]

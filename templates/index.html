@@ -6,88 +6,91 @@
 
 {% block main %}
 
-    <div class="container">
-        <h1>Welcome</h1>
-        <p class = "lead">This site will help you solve your Rubiks cube!</p>
-        <div class="row">
-            <div class="col">
-                <p>This site was built for the final project of <a href="https://cs50.harvard.edu/x/2021/" target="_blank">CS50x</a>.</p>
-                <p>This site will help you solve a Rubiks cube.  After entering your current cube configuration, the site will calculate what your next moves should be, all the way through to solving the cube!</p>
-                <p>There are different ways to solve a Rubiks cube, the manual method on this site uses an 8-step method as described in the adjacent video from Wired.  If you want to understand why each move is being made, or learn to solve a cube without this site, this video will explain.  If you just want to get cracking, no need to watch the video!</p>
-            </div>
-            <div class="col"><iframe width="560" height="315" src="https://www.youtube.com/embed/R-R0KrXvWbc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <h1>Welcome</h1>
+    <div class="row">
+        <div class="col">
+            <p class = "lead">This site will help you solve your Rubiks cube!</p>
+            <p>This site was built for the final project of <a href="https://cs50.harvard.edu/x/2021/" target="_blank">CS50x</a>.</p>
+            <p>This site will help you solve a Rubiks cube.  After entering your current cube configuration, the site will calculate what your next moves should be, all the way through to solving the cube!</p>
+            <p>There are different ways to solve a Rubiks cube, the manual method on this site uses an 8-step method as described in the adjacent video from Wired.  If you want to understand why each move is being made, or learn to solve a cube without this site, this video will explain.  If you just want to get cracking, no need to watch the video!</p>
+        </div>
+        <div class="col">
+            <div class="iframe-container">
+                <iframe class="responsive-iframe" src="https://www.youtube.com/embed/R-R0KrXvWbc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
-
-        <h2>Create new cube:</h2>
-        <div class="row">
-            <div class="col">
-                <p>If you wish to play around with the website without entering an actual cube, you can use either of the following buttons labelled "random".  Otherwise if you want to solve an actual real-life cube, please select "manually enter new cube" below.</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <p>Generate a random but solvable rubik's cube (in order to test the website).  This will take a solved cube, then perform a random selection of moves on the cube:</p>
-            </div>
-            <div class="col-xs-auto">
-                <a href=random_cube><button style="width:260px;" onclick="loading_on()" class="btn btn-primary" type="button">Create Random Solvable Cube</button></a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <p>Randomly fill the system with colours. This is likely to be invalid (to test the input validation and cube amendment):</p>
-            </div>
-            <div class="col-xs-auto">
-                <a href=random_squares><button style="width:260px;" onclick="loading_on()" class="btn btn-primary" type="button">Create Random Unsolvable Cube</button></a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <p>Manually enter an actual real-life cube to be solved:</p>
-            </div>
-            <div class="col-xs-auto">
-                <a href=enter><button style="width:260px;" class="btn btn-primary" type="button">Manually Enter New Cube</button></a>
-            </div>
-        </div>
-
-        <h2>Load existing cube:</h2>
-
-        <p>The below table lists the existing cubes created by this user. To continue to work on a cube you have already created, click "Load".  To change the colours on an existing cube, click "Amend".:</p>
-            <div id="home_cube_table">
-            <table class="table table-striped table-hover table-sm">
-                <thead>
-                    <tr>
-                        <th>Cube ID</th>
-                        <th>Stage</th>
-                        <th>Load</th>
-                        <th>Created</th>
-                        <th>Input Check</th>
-                        <th>Amend</th>
-                        <th>Copy</th>
-                        <th>Delete</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for id in users_cubes %}
-                        <tr>
-                            <td>{{ id.id }}</td>
-                            <td>{{ id.stage }}/8</td>
-                            <td><form method = "post" action="/load"><button name="load" class="btn btn-outline-primary btn-sm" type="submit" value={{ id.id }}>Load</button></form></td>
-                            <td>{{ id.created }}</td>
-                            <td>{{ id.check }}</td>
-                            <td><form method = "post" action="/amend_from_list"><button name="amend" class="btn btn-outline-success btn-sm" type="submit" value={{ id.id }}>Amend</button></form></td>
-                            <td><form method = "post" action="/copy"><button name="copy" onclick="loading_on()" class="btn btn-outline-secondary btn-sm" type="submit" value={{ id.id }}>Copy</button></form></td>
-                            <td><form method = "post" action="/delete_cube"><button name="delete" onclick="loading_on()" class="btn btn-outline-danger btn-sm" type="submit" value={{ id.id }}>Delete</button></form></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            </div>
-        </br>
-        <p>To delete all existing cubes from your account (as listed above), click here: <a href=#><button class="btn btn-danger" onclick="loading_on()" type="button">Delete All Cubes</button></a></p>
-
-
     </div>
+
+    <h2>Create new cube:</h2>
+    <div class="row">
+        <div class="col">
+            <p>If you wish to play around with the website without entering an actual cube, you can use either of the following buttons labelled "random".  Otherwise if you want to solve an actual real-life cube, please select "manually enter new cube" below.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p>Generate a random but solvable rubik's cube (in order to test the website).  This will take a solved cube, then perform a random selection of moves on the cube:</p>
+        </div>
+        <div class="col-xs-auto">
+            <a href=random_cube><button style="width:260px;" onclick="loading_on()" class="btn btn-primary" type="button">Create Random Solvable Cube</button></a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <p>Randomly fill the system with colours. This is likely to be invalid (to test the input validation and cube amendment):</p>
+        </div>
+        <div class="col-xs-auto">
+            <a href=random_squares><button style="width:260px;" onclick="loading_on()" class="btn btn-primary" type="button">Create Random Unsolvable Cube</button></a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <p>Manually enter an actual real-life cube to be solved:</p>
+        </div>
+        <div class="col-xs-auto">
+            <a href=enter><button style="width:260px;" class="btn btn-primary" type="button">Manually Enter New Cube</button></a>
+        </div>
+    </div>
+
+    <h2>Load existing cube:</h2>
+
+    <p>The below table lists the existing cubes created by this user. To continue to work on a cube you have already created, click "Load".  To change the colours on an existing cube, click "Amend".:</p>
+        <div id="home_cube_table">
+        <table class="table table-striped table-hover table-sm">
+            <thead>
+                <tr>
+                    <th>Cube ID</th>
+                    <th>Stage</th>
+                    <th>Load</th>
+                    <th>Created</th>
+                    <th>Input Check</th>
+                    <th>Amend</th>
+                    <th>Copy</th>
+                    <th>Delete</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for id in users_cubes %}
+                    <tr>
+                        <td>{{ id.id }}</td>
+                        <td>{{ id.stage }}/8</td>
+                        <td><form method = "post" action="/load"><button name="load" class="btn btn-outline-primary btn-sm" type="submit" value={{ id.id }}>Load</button></form></td>
+                        <td>{{ id.created }}</td>
+                        <td>{{ id.check }}</td>
+                        <td><form method = "post" action="/amend_from_list"><button name="amend" class="btn btn-outline-success btn-sm" type="submit" value={{ id.id }}>Amend</button></form></td>
+                        <td><form method = "post" action="/copy"><button name="copy" onclick="loading_on()" class="btn btn-outline-secondary btn-sm" type="submit" value={{ id.id }}>Copy</button></form></td>
+                        <td><form method = "post" action="/delete_cube"><button name="delete" onclick="loading_on()" class="btn btn-outline-danger btn-sm" type="submit" value={{ id.id }}>Delete</button></form></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </br>
+    <p>To delete all existing cubes from your account (as listed above), click here: <a href=#><button class="btn btn-danger" onclick="loading_on()" type="button">Delete All Cubes</button></a></p>
+
+
 
 {% endblock %}
