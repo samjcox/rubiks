@@ -814,9 +814,6 @@ def next_action():
         print("NEXT 7., top edge pieces done, cube solved - end of function")
         return next_actions_list
 
-    elif progress == 8:
-        return next_actions_list
-
 
 def improve_efficiency(next_actions_list):
     # Improve efficiency of moves in next_actions_list.

@@ -507,23 +507,26 @@ def solve():
     # Take current session cube.
     current_cube_id = session["current_cube_id"]
     progress = helpers.solve_progress(session["cube"])
-    db.execute("UPDATE cubes SET 'stage' = ? WHERE id = ?", progress, session["current_cube_id"])
+    if progress == 8:
+        return render_template("complete.html")
+    else:
+        db.execute("UPDATE cubes SET 'stage' = ? WHERE id = ?", progress, session["current_cube_id"])
 
-    print("SOLVE - PROGRESS CHECK COMPLETED")
-    print("SOLVE - Progress stage found to be " + str(progress))
+        print("SOLVE - PROGRESS CHECK COMPLETED")
+        print("SOLVE - Progress stage found to be " + str(progress))
 
-    session["next_cube_colours"] = session["cube"]
+        session["next_cube_colours"] = session["cube"]
 
-    print("SOLVE - NEXT_CUBE_COLOURS CREATED.")
+        print("SOLVE - NEXT_CUBE_COLOURS CREATED.")
 
-    # Create blank list, ready to receive the list of moves required to
-    # progress to solve the current stage of the cube.
-    next_actions_list = helpers.next_action()
+        # Create blank list, ready to receive the list of moves required to
+        # progress to solve the current stage of the cube.
+        next_actions_list = helpers.next_action()
 
-    # Improve efficiency of moves in next_actions_list.
-    next_actions_list = helpers.improve_efficiency(next_actions_list)
+        # Improve efficiency of moves in next_actions_list.
+        next_actions_list = helpers.improve_efficiency(next_actions_list)
 
-    return render_template("solve.html", next_actions_list=next_actions_list, squares=squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=progress)
+        return render_template("solve.html", next_actions_list=next_actions_list, squares=squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=progress)
 
     # Display current position of cube.
 
