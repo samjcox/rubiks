@@ -276,7 +276,7 @@ def check_cube():
 def solve_randomly():
 
     cube = session["cube"]
-    max_number_of_moves = 10000
+    max_number_of_moves = 100000
     move_count = 0
     for move in range(0,max_number_of_moves):
         if helpers.solve_progress(cube) == 8:
@@ -505,7 +505,9 @@ def solve():
         # Improve efficiency of moves in next_actions_list.
         next_actions_list = helpers.improve_efficiency(next_actions_list)
 
-        return render_template("solve.html", next_actions_list=next_actions_list, squares=squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=progress)
+        stage_name = config.stage_names[progress]
+
+        return render_template("solve.html", next_actions_list=next_actions_list, squares=squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=progress, stage_name=stage_name)
 
 
 @app.route("/solve_entirely")
@@ -548,14 +550,10 @@ def solve_entirely():
                 complete_solve_list.append(move)
 
         # Improve efficiency of moves in next_actions_list.
-        #next_actions_list = helpers.improve_efficiency(complete_solve_list)
+        next_actions_list = helpers.improve_efficiency(complete_solve_list)
         return render_template("solve.html", next_actions_list=complete_solve_list, squares=squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=progress)
 
-
-    # ?!?!?! add efficiency check??
-    # !??!?! add row splits to display of moves on solve page.
     # ?!?!?! correct progress bar on solve page for this sove_entirely option.
-
 
 
 # Function to record the user has correctly followed the moves of this stage,

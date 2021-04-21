@@ -92,3 +92,6 @@ face_clockwise_moves = {
 
 # List of possible moves.
 possible_moves = ["F", "F'", "U", "U'", "R", "R'", "L", "L'", "B", "B'", "D", "D'"]
+
+# Names of each stage.
+stage_names = ["Daisy", "White Cross", "White Face", "Middle Row", "Yellow Cross", "Yellow Face", "Top Corners", "Top Row"]
