@@ -4,8 +4,6 @@ import random
 import helpers
 import config
 
-from config import squares
-from config import colours
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
@@ -13,8 +11,6 @@ from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
-
-# ?!?!?!? check if any of the above are redundant.
 
 # Configure application
 app = Flask(__name__)
@@ -229,13 +225,13 @@ def create_cube():
 def check_cube():
 
     # Create colour_check dictionary and set counts to zero.
-    colour_check = dict.fromkeys(colours)
+    colour_check = dict.fromkeys(config.colours)
     for colour in colour_check:
         colour_check[colour] = 0
 
     # Iterate through the squares to sum the colours.
     for square in session["cube"]:
-        for colour in colours:
+        for colour in config.colours:
             if session["cube"][square] == colour:
                 colour_check[colour] = colour_check[colour] + 1
                 break
@@ -280,13 +276,13 @@ def solve_randomly():
     move_count = 0
     for move in range(0,max_number_of_moves):
         if helpers.solve_progress(cube) == 8:
-            for square in squares:
+            for square in config.squares:
                 session["cube"][square] = cube[square]
             return redirect("/solve")
         else:
             move_count = move_count + 1
             cube = random_move(cube)
-    for square in squares:
+    for square in config.squares:
         session["cube"][square] = cube[square]
 
     flash(str(move_count) + " randomly picked moves were made.")
@@ -379,12 +375,12 @@ def enter():
     if request.method == "GET":
 
         # Display blank template to entre new cube.
-        return render_template("enter.html", squares=squares)
+        return render_template("enter.html", squares=config.squares)
 
     if request.method == "POST":
 
         # Create empty dictionary of squares, ready for user input.
-        cube = dict.fromkeys(squares)
+        cube = dict.fromkeys(config.squares)
 
         # Create new cube in database:
         create_cube()
@@ -462,12 +458,12 @@ def amend():
 
     # If loading page originally:
     if request.method == "GET":
-        return render_template("amend.html", squares=squares, cube=session["cube"])
+        return render_template("amend.html", squares=config.squares, cube=session["cube"])
 
     # If new data submitted:
     if request.method == "POST":
         # Take input from form to update cube in database.
-        for square in squares:
+        for square in config.squares:
             square_colour = request.form.get(square)
             session["cube"][square] = square_colour
             db.execute("UPDATE cubes SET ? = ? WHERE id = ?", square, square_colour, session["current_cube_id"])
@@ -507,7 +503,7 @@ def solve():
 
         stage_name = config.stage_names[progress]
 
-        return render_template("solve.html", next_actions_list=next_actions_list, squares=squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=progress, stage_name=stage_name)
+        return render_template("solve.html", next_actions_list=next_actions_list, squares=config.squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=progress, stage_name=stage_name)
 
 
 @app.route("/solve_entirely")
@@ -522,6 +518,7 @@ def solve_entirely():
     # Take current session cube.
     current_cube_id = session["current_cube_id"]
     progress = helpers.solve_progress(session["cube"])
+    starting_progress = progress
 
     if progress == 8:
         print("SOLVE ENTIRELY - Solving stage is 8.")
@@ -551,9 +548,7 @@ def solve_entirely():
 
         # Improve efficiency of moves in next_actions_list.
         next_actions_list = helpers.improve_efficiency(complete_solve_list)
-        return render_template("solve.html", next_actions_list=complete_solve_list, squares=squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=progress)
-
-    # ?!?!?! correct progress bar on solve page for this sove_entirely option.
+        return render_template("solve.html", next_actions_list=complete_solve_list, squares=config.squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=starting_progress)
 
 
 # Function to record the user has correctly followed the moves of this stage,
@@ -561,7 +556,7 @@ def solve_entirely():
 @app.route("/next_stage")
 @login_required
 def next_stage():
-    for square in squares:
+    for square in config.squares:
         session["cube"][square] = session["next_cube_colours"][square]
         # Update the database with new cube state.
         db.execute("UPDATE cubes SET ? = ? WHERE id = ?", square, session['cube'][square], session["current_cube_id"])

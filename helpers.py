@@ -1,9 +1,6 @@
 from flask import session
 import config
 
-from config import squares
-from config import solved_cube
-
 # Determine stage of solving (manual stage checking):
 def solve_progress(cube):
 
@@ -130,10 +127,10 @@ def solve_progress(cube):
 
     # Summarise stage of solving.
     solve_progress = 0
-    solved_cube = True
+    cube_solved = True
     for stage in stages_solved:
         if stages_solved[stage] == False:
-            solved_cube = False
+            cube_solved = False
             break
         solve_progress = solve_progress + 1
 
@@ -568,7 +565,7 @@ def next_action():
             # check if middle edge pieces are wrong colour, if so move out of middle row.
             print("NEXT 3.08, middle row - check if middle row pieces are incorrect.")
             for square in middle_row_edge_squares:
-                if cube[square] != solved_cube[square]:
+                if cube[square] != config.solved_cube[square]:
                     # Incorrect colour, so move square out of middle row.
                     print("NEXT 3.09, middle row - incorrect piece found, move out.")
                     for action in middle_row_edge_squares[square]:
@@ -863,7 +860,7 @@ def move_rc(cube):
     new_cube_colours = {}
 
     # Iterate through to ONLY copy over squares, not ID etc.
-    for square in squares:
+    for square in config.squares:
         new_cube_colours[square] = cube[square]
 
     # Change squares that need to be changed.
@@ -897,7 +894,7 @@ def move_ra(cube):
     new_cube_colours = {}
 
     # Iterate through to ONLY copy over squares, not ID etc.
-    for square in squares:
+    for square in config.squares:
         new_cube_colours[square] = cube[square]
 
     # Change squares that need to be changed.
@@ -931,7 +928,7 @@ def move_lc(cube):
     new_cube_colours = {}
 
     # Iterate through to ONLY copy over squares, not ID etc.
-    for square in squares:
+    for square in config.squares:
         new_cube_colours[square] = cube[square]
 
     # Change squares that need to be changed.
@@ -965,7 +962,7 @@ def move_la(cube):
     new_cube_colours = {}
 
     # Iterate through to ONLY copy over squares, not ID etc.
-    for square in squares:
+    for square in config.squares:
         new_cube_colours[square] = cube[square]
 
     # Change squares that need to be changed.
@@ -999,7 +996,7 @@ def move_uc(cube):
     new_cube_colours = {}
 
     # Iterate through to ONLY copy over squares, not ID etc.
-    for square in squares:
+    for square in config.squares:
         new_cube_colours[square] = cube[square]
 
     # Change squares that need to be changed.
@@ -1033,7 +1030,7 @@ def move_ua(cube):
     new_cube_colours = {}
 
     # Iterate through to ONLY copy over squares, not ID etc.
-    for square in squares:
+    for square in config.squares:
         new_cube_colours[square] = cube[square]
 
     # Change squares that need to be changed.
@@ -1067,7 +1064,7 @@ def move_fa(cube):
     new_cube_colours = {}
 
     # Iterate through to ONLY copy over squares, not ID etc.
-    for square in squares:
+    for square in config.squares:
         new_cube_colours[square] = cube[square]
 
     # Change squares that need to be changed.
@@ -1102,7 +1099,7 @@ def move_fc(cube):
     new_cube_colours = {}
 
     # Iterate through to ONLY copy over squares, not ID etc.
-    for square in squares:
+    for square in config.squares:
         new_cube_colours[square] = cube[square]
 
     # Change squares that need to be changed.
@@ -1137,7 +1134,7 @@ def move_bc(cube):
     new_cube_colours = {}
 
     # Iterate through to ONLY copy over squares, not ID etc.
-    for square in squares:
+    for square in config.squares:
         new_cube_colours[square] = cube[square]
 
     # Change squares that need to be changed.
@@ -1171,7 +1168,7 @@ def move_ba(cube):
     new_cube_colours = {}
 
     # Iterate through to ONLY copy over squares, not ID etc.
-    for square in squares:
+    for square in config.squares:
         new_cube_colours[square] = cube[square]
 
     # Change squares that need to be changed.
@@ -1205,7 +1202,7 @@ def move_dc(cube):
     new_cube_colours = {}
 
     # Iterate through to ONLY copy over squares, not ID etc.
-    for square in squares:
+    for square in config.squares:
         new_cube_colours[square] = cube[square]
 
     # Change squares that need to be changed.
@@ -1239,7 +1236,7 @@ def move_da(cube):
     new_cube_colours = {}
 
     # Iterate through to ONLY copy over squares, not ID etc.
-    for square in squares:
+    for square in config.squares:
         new_cube_colours[square] = cube[square]
 
     # Change squares that need to be changed.

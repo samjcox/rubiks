@@ -9,13 +9,11 @@
 
     <h2>Solve your cube</h2>
     <p>You are currently solving Cube ID {{ session["current_cube_id"] }}.</p>
-    <p>You are currently at stage {{ progress }} of 8.  This is called the "{{ stage_name }}" stage.</p>
+    <p>You are currently at <b>Stage {{ progress }} of 8</b>, which will solve the <b>{{ stage_name }}</b>.</p>
     <div class="progress" style="height: 20px;">
         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ ((progress / 8) * 100) | int}}%" aria-valuenow="{{ ((progress / 8) * 100) | int}}" aria-valuemin="0" aria-valuemax="100">{{ ((progress / 8) * 100) | int}}%</div>
     </div>
-
-    <p>ADD LEGEND FOR WHAT NOTATION MEANS WHAT MOVE.</p>
-
+    </br>
     <div class="card-deck">
         <div class="card">
             <div class="card-header">
@@ -99,12 +97,9 @@
             </div>
             <div class="card-footer">
 
-                Click Here for Moves Legend
+                <u>Cube Notation Legend:</u>
 
-
-
-
-                <ul class="no-bullet-list">
+                <ul class="no-bullet-list" style="font-size: 15px;">
                     <li>U = top face clockwise.</li>
                     <li>U' = top face anti-clockwise.</li>
                     <li>F = front face clockwise.</li>
@@ -113,6 +108,10 @@
                     <li>R' = right face anti-clockwise.</li>
                     <li>L = left face clockwise.</li>
                     <li>L' = left face anti-clockwise.</li>
+                    <li>B = back face clockwise.</li>
+                    <li>B' = back face anti-clockwise.</li>
+                    <li>D = bottom clockwise.</li>
+                    <li>D' = bottom anti-clockwise.</li>
 
                 </ul>
 
