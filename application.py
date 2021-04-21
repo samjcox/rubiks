@@ -5,7 +5,6 @@ import helpers
 import config
 
 from config import squares
-from config import solved_cube
 from config import colours
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
@@ -271,28 +270,6 @@ def check_cube():
         return redirect("/amend")
 
 
-# Route to randomly populate squares of a cube.
-@app.route("/random_squares")
-@login_required
-def random_squares():
-
-    # Create dictionary of squares, ready for user input.
-    cube = solved_cube
-
-    # Create new cube in database:
-    create_cube()
-
-    # Enter the submitted data into the dictionary:
-    for square in cube:
-        square_colour = colours[random.randint(0, 5)]
-        cube[square] = square_colour
-        db.execute("UPDATE cubes SET ? = ? WHERE id = ?", square, square_colour, session["current_cube_id"])
-
-    # Run cube check and store result in database (expected to return "error" most of the time):
-    session["cube"] = cube
-    return check_cube()
-
-
 # Route to solve a cube with random moves.
 @app.route("/solve_randomly")
 @login_required
@@ -373,7 +350,7 @@ def randomise_user_cube():
 def random_cube():
 
     # Load solved cube.
-    cube = solved_cube
+    cube = config.solved_cube
 
     # Define number of random moves to make.
     random_moves = 50
@@ -504,22 +481,24 @@ def solve():
 
     print("SOLVE - START SOLVE FUNCTION.")
 
-    # Take current session cube.
+    # Take current session cube and check progress.
     current_cube_id = session["current_cube_id"]
     progress = helpers.solve_progress(session["cube"])
+    db.execute("UPDATE cubes SET 'stage' = ? WHERE id = ?", progress, session["current_cube_id"])
+
+    print("SOLVE - PROGRESS CHECK COMPLETED")
+    print("SOLVE - Progress stage found to be " + str(progress))
+
     if progress == 8:
+        # Cube is completed already, show complete page.
         return render_template("complete.html")
+
     else:
-        db.execute("UPDATE cubes SET 'stage' = ? WHERE id = ?", progress, session["current_cube_id"])
-
-        print("SOLVE - PROGRESS CHECK COMPLETED")
-        print("SOLVE - Progress stage found to be " + str(progress))
-
+        # Moves are required, determine moves.
         session["next_cube_colours"] = session["cube"]
-
         print("SOLVE - NEXT_CUBE_COLOURS CREATED.")
 
-        # Create blank list, ready to receive the list of moves required to
+        # Create list of moves required to
         # progress to solve the current stage of the cube.
         next_actions_list = helpers.next_action()
 
@@ -528,7 +507,55 @@ def solve():
 
         return render_template("solve.html", next_actions_list=next_actions_list, squares=squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=progress)
 
-    # Display current position of cube.
+
+@app.route("/solve_entirely")
+@login_required
+def solve_entirely():
+
+    print("Complete solve function started.")
+
+    complete_solve_list = []
+    session["next_cube_colours"] = session["cube"]
+
+    # Take current session cube.
+    current_cube_id = session["current_cube_id"]
+    progress = helpers.solve_progress(session["cube"])
+
+    if progress == 8:
+        print("SOLVE ENTIRELY - Solving stage is 8.")
+        # Cube already solved, nothing to do.
+        return render_template("complete.html")
+
+    while progress < 7:
+        print("SOLVE ENTIRELY - Solving stage less than 7.")
+
+        # Loop through each solve stage.
+        # Append moves required for that solve stage to the overall list.
+        next_moves_list = helpers.next_action()
+        for move in next_moves_list:
+            complete_solve_list.append(move)
+
+        progress = helpers.solve_progress(session["next_cube_colours"])
+
+    else:
+        if progress == 7:
+            print("SOLVE ENTIRELY - Solving stage is 7.")
+
+            # Final run of next_actions, then return results.
+            # Append moves required for that solve stage to the overall list.
+            next_moves_list = helpers.next_action()
+            for move in next_moves_list:
+                complete_solve_list.append(move)
+
+        # Improve efficiency of moves in next_actions_list.
+        #next_actions_list = helpers.improve_efficiency(complete_solve_list)
+        return render_template("solve.html", next_actions_list=complete_solve_list, squares=squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=progress)
+
+
+    # ?!?!?! add efficiency check??
+    # !??!?! add row splits to display of moves on solve page.
+    # ?!?!?! correct progress bar on solve page for this sove_entirely option.
+
 
 
 # Function to record the user has correctly followed the moves of this stage,
