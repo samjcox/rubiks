@@ -3,8 +3,8 @@ import datetime
 import random
 import helpers
 import config
+import sqlite3
 
-from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from tempfile import mkdtemp
@@ -35,8 +35,15 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 
-# Configure CS50 library to use SQLite database
-db = SQL("sqlite:///rubiks.db")
+# Setup SQLite database
+def db_connect():
+    con = sqlite3.connect('rubiks.db')
+    con.row_factory = sqlite3.Row
+    return con
+
+def db_close(con):
+    con.commit()
+    con.close()
 
 def login_required(f):
     @wraps(f)
@@ -71,7 +78,11 @@ def login():
             return render_template("/login.html")
 
         # Check database for username and password.
-        rows = db.execute("SELECT * FROM users  WHERE username = ?", request.form.get("username"))
+        con = db_connect()
+        cur = con.cursor()
+        cur.execute("SELECT * FROM users WHERE username = ?", (request.form.get("username"),))
+        rows = [dict(row) for row in cur.fetchall()]
+        db_close(con)
         if len(rows) != 1 or not check_password_hash(rows[0]["hashed_password"], request.form.get("password")):
             flash("Username and/or password does not match.")
             return render_template("/login.html")
@@ -112,7 +123,13 @@ def register():
             return redirect("/register")
 
         # Check that username does not already exist.
-        if db.execute("SELECT username FROM users WHERE username = ?", request.form.get("username")):
+        con = db_connect()
+        cur = con.cursor()
+        cur.execute("SELECT username FROM users WHERE username = ?", (request.form.get("username"),))
+        username = [dict(row) for row in cur.fetchall()]
+        db_close(con)
+
+        if username:
             flash("Username " + request.form.get("username") + " already exists.")
             return redirect("/register")
 
@@ -143,10 +160,14 @@ def register():
         hashed = generate_password_hash(password, "sha256")
 
         # Submit username and hashed password to database.
-        db.execute("INSERT INTO users(username, hashed_password) VALUES (?,?)", request.form.get("username"), hashed)
+        con = db_connect()
+        cur = con.cursor()
+        cur.execute("INSERT INTO users (username, hashed_password) VALUES (?,?)", (request.form.get("username"), hashed,))
 
         # Automatically log user in.
-        user_id = db.execute("SELECT id FROM users WHERE username = ?", request.form.get("username"))
+        cur.execute("SELECT id FROM users WHERE username = ?", (request.form.get("username"),))
+        user_id = [dict(row) for row in cur.fetchall()]
+        db_close(con)
         session['user_id'] = user_id[0]["id"]
         session["username"] = request.form.get("username")
 
@@ -160,7 +181,11 @@ def register():
 @login_required
 def index():
     # Display previously entered cubes.
-    users_cubes = db.execute("SELECT * FROM cubes WHERE user_id = ? ORDER BY id DESC", session["user_id"])
+    con = db_connect()
+    cur = con.cursor()
+    cur.execute("SELECT * FROM cubes WHERE user_id = ? ORDER BY id DESC", (session["user_id"],))
+    users_cubes = [dict(row) for row in cur.fetchall()]
+    db_close(con)
 
     return render_template("index.html", users_cubes=users_cubes)
 
@@ -170,7 +195,11 @@ def index():
 @login_required
 def load_page():
     # Display previously entered cubes.
-    users_cubes = db.execute("SELECT * FROM cubes WHERE user_id = ? ORDER BY id DESC", session["user_id"])
+    con = db_connect()
+    cur = con.cursor()
+    cur.execute("SELECT * FROM cubes WHERE user_id = ? ORDER BY id DESC", (session["user_id"],))
+    users_cubes = [dict(row) for row in cur.fetchall()]
+    db_close(con)
 
     return render_template("load.html", users_cubes=users_cubes)
 
@@ -179,9 +208,11 @@ def load_page():
 @app.route("/delete_cube", methods=["POST"])
 @login_required
 def delete_cube():
-
     cube_to_delete = request.form.get("delete")
-    db.execute("DELETE FROM cubes WHERE id = ?", cube_to_delete)
+    con = db_connect()
+    cur = con.cursor()
+    cur.execute("DELETE FROM cubes WHERE id = ?", (cube_to_delete,))
+    db_close(con)
 
     # If sessions current cube is the cube to be deleted, set current cube to zero.
     if session["current_cube_id"] == cube_to_delete:
@@ -195,8 +226,10 @@ def delete_cube():
 @app.route("/delete_all_cubes", methods=["GET"])
 @login_required
 def delete_all_cubes():
-
-    db.execute("DELETE FROM cubes WHERE user_id = ?", session["user_id"])
+    con = db_connect()
+    cur = con.cursor()
+    cur.execute("DELETE FROM cubes WHERE user_id = ?", (session["user_id"],))
+    db_close(con)
 
     # Set current cube to zero.
     session["current_cube_id"] = 0
@@ -210,10 +243,14 @@ def create_cube():
 
     # Create new cube in database to generate cube ID number.
     created = datetime.datetime.now()
-    db.execute("INSERT INTO cubes (user_id, created) VALUES (?, ?)", session["user_id"], created)
+    con = db_connect()
+    cur = con.cursor()
+    cur.execute("INSERT INTO cubes (user_id, created) VALUES (?, ?)", (session["user_id"], created,))
 
     # Cannot currently get lastrowid to work, so using latest entered cube based on time instead.
-    cube_id_list = db.execute("SELECT id FROM cubes WHERE user_id = ? ORDER BY created DESC LIMIT 1", session["user_id"])
+    cur.execute("SELECT id FROM cubes WHERE user_id = ? ORDER BY created DESC LIMIT 1", (session["user_id"],))
+    cube_id_list = [dict(row) for row in cur.fetchall()]
+    db_close(con)
     cube_id = cube_id_list[0]['id']
 
     # Store Id of this new cube and empty session cube.
@@ -249,10 +286,14 @@ def check_cube():
         elif colour_check[colour] > 9:
             session["errors"].append("Too many " + colour + " squares.")
 
+    con = db_connect()
+    cur = con.cursor()
+
     if not session["errors"]:
         # Add "no errors" & progress status to database.
         progress = helpers.solve_progress(session["cube"])
-        db.execute("UPDATE cubes SET 'check' = 'Input Ok', 'stage' = ? WHERE id = ?", progress, session["current_cube_id"])
+        cur.execute("UPDATE cubes SET 'check' = 'Input Ok', 'stage' = ? WHERE id = ?", (progress, session["current_cube_id"],))
+        db_close(con)
         # Flash message to confirm successful save.
         flash("Cube " + str(session["current_cube_id"]) + " has been checked and is correct.")
         print("CHECK CUBE NO ERRORS COMPLETE.")
@@ -260,7 +301,8 @@ def check_cube():
 
     else:
         # Load "amend" page to display errors and resolve them.
-        db.execute("UPDATE cubes SET 'check' = 'Error' WHERE id = ?", session["current_cube_id"])
+        cur.execute("UPDATE cubes SET 'check' = 'Error' WHERE id = ?", (session["current_cube_id"],))
+        db_close(con)
         flash("Errors found in your cube entry, please resolve before solving.")
         print("CHECK CUBE WITH ERRORS COMPLETE.")
         return redirect("/amend")
@@ -358,8 +400,13 @@ def random_cube():
     create_cube()
 
     # Enter the randomised data into the dictionary:
+    con = db_connect()
+    cur = con.cursor()
     for square in cube:
-        db.execute("UPDATE cubes SET ? = ? WHERE id = ?", square, cube[square], session["current_cube_id"])
+        # ?!?! TO BE REVIEWED, Consider the risk of SQL Injection attack in the below, while needing to iterate through 54 columns.
+        update_query = f"UPDATE cubes SET {square} = ? WHERE id = ?"
+        cur.execute(update_query, (cube[square], session["current_cube_id"]))
+    db_close(con)
 
     # Run cube check and store result in database:
     session["cube"] = cube
@@ -386,11 +433,14 @@ def enter():
         create_cube()
 
         # Enter the submitted data into the dictionary:
+        con = db_connect()
+        cur = con.cursor()
         for square in cube:
             square_colour = request.form.get(square)
             cube[square] = square_colour
-            db.execute("UPDATE cubes SET ? = ? WHERE id = ?", square, square_colour, session["current_cube_id"])
-
+            update_query = f"UPDATE cubes SET {square} = ? WHERE id = ?"
+            cur.execute(update_query, (square_colour, session["current_cube_id"],))
+        db_close(con)
         session["cube"] = cube
 
         # Run check function.
@@ -405,8 +455,12 @@ def load():
     # Then proceed to solve page.
     cube_to_load = request.form.get("load")
     session["current_cube_id"] = cube_to_load
-    cube_loading = db.execute("SELECT * FROM cubes WHERE id = ?", cube_to_load)
+    con = db_connect()
+    cur = con.cursor()
+    cur.execute("SELECT * FROM cubes WHERE id = ?", (cube_to_load,))
+    cube_loading = [dict(row) for row in cur.fetchall()]
     session["cube"] = cube_loading[0]
+    db_close(con)
 
     flash("Cube ID " + cube_to_load + " has been loaded.")
 
@@ -420,8 +474,12 @@ def amend_from_list():
     # Replace current session cube with clicked cube.
     cube_to_amend = request.form.get("amend")
     session["current_cube_id"] = cube_to_amend
-    cube_loading = db.execute("SELECT * FROM cubes WHERE id = ?", cube_to_amend)
+    con = db_connect()
+    cur = con.cursor()
+    cur.execute("SELECT * FROM cubes WHERE id = ?", (cube_to_amend,))
+    cube_loading = [dict(row) for row in cur.fetchall()]
     session["cube"] = cube_loading[0]
+    db_close(con)
 
     flash("Cube ID " + cube_to_amend + " has been loaded for amendment.")
     return redirect("/amend")
@@ -433,7 +491,10 @@ def copy():
 
     # Load cube to be copied into temporary dictionary.
     cube_id_to_copy = request.form.get("copy")
-    cube_loading = db.execute("SELECT * FROM cubes WHERE id = ?", cube_id_to_copy)
+    con = db_connect()
+    cur = con.cursor()
+    cur.execute("SELECT * FROM cubes WHERE id = ?", (cube_id_to_copy,))
+    cube_loading = [dict(row) for row in cur.fetchall()]
     temp_cube = cube_loading[0]
 
     # Create new blank cube, and make current session cube.
@@ -445,7 +506,9 @@ def copy():
 
     # Save new cube contents to database.
     for item in temp_cube:
-        db.execute("UPDATE cubes SET ? = ? WHERE id = ?", item, session["cube"][item], session["current_cube_id"])
+        update_query = f"UPDATE cubes SET {item} = ? WHERE id = ?"
+        cur.execute(update_query, (session["cube"][item], session["current_cube_id"],))
+    db_close(con)
 
     flash("Copy of Cube ID " + str(cube_id_to_copy) + ", created as new Cube ID " + str(session["current_cube_id"]))
 
@@ -463,11 +526,15 @@ def amend():
     # If new data submitted:
     if request.method == "POST":
         # Take input from form to update cube in database.
+        con = db_connect()
+        cur = con.cursor()
+
         for square in config.squares:
             square_colour = request.form.get(square)
             session["cube"][square] = square_colour
-            db.execute("UPDATE cubes SET ? = ? WHERE id = ?", square, square_colour, session["current_cube_id"])
-
+            update_query = f"UPDATE cubes SET {square} = ? WHERE id = ?"
+            cur.execute(update_query, (square_colour, session["current_cube_id"],))
+        db_close(con)
         return check_cube()
 
 
@@ -480,7 +547,10 @@ def solve():
     # Take current session cube and check progress.
     current_cube_id = session["current_cube_id"]
     progress = helpers.solve_progress(session["cube"])
-    db.execute("UPDATE cubes SET 'stage' = ? WHERE id = ?", progress, session["current_cube_id"])
+    con = db_connect()
+    cur = con.cursor()
+    cur.execute("UPDATE cubes SET 'stage' = ? WHERE id = ?", (progress, session["current_cube_id"],))
+    db_close(con)
 
     print("SOLVE - PROGRESS CHECK COMPLETED")
     print("SOLVE - Progress stage found to be " + str(progress))
@@ -556,9 +626,13 @@ def solve_entirely():
 @app.route("/next_stage")
 @login_required
 def next_stage():
+    con = db_connect()
+    cur = con.cursor()
     for square in config.squares:
         session["cube"][square] = session["next_cube_colours"][square]
         # Update the database with new cube state.
-        db.execute("UPDATE cubes SET ? = ? WHERE id = ?", square, session['cube'][square], session["current_cube_id"])
+        update_query = f"UPDATE cubes SET {square} = ? WHERE id = ?"
+        cur.execute(update_query, (session['cube'][square], session["current_cube_id"],))
+    db_close(con)
 
     return redirect("/solve")
