@@ -1,6 +1,7 @@
 from flask import session
 import config
 
+
 # Determine stage of solving (manual stage checking):
 def solve_progress(cube):
 
@@ -129,7 +130,7 @@ def solve_progress(cube):
     solve_progress = 0
     cube_solved = True
     for stage in stages_solved:
-        if stages_solved[stage] == False:
+        if stages_solved[stage] is False:
             cube_solved = False
             break
         solve_progress = solve_progress + 1
@@ -168,6 +169,7 @@ def notation_conversion(cube, notation):
         new_cube_colours = move_fa(cube)
 
     return new_cube_colours
+
 
 # Determine what moves are required.
 def next_action():
@@ -491,7 +493,7 @@ def next_action():
 
             # Loop around while there is a non-yellow edge cubelette in the top row.
             non_yellow_remaining = True
-            while non_yellow_remaining == True:
+            while non_yellow_remaining is True:
                 for square in top_row_edge_cubelettes:
                     if (cube[square] != 'yellow' and cube[top_row_edge_cubelettes[square]] != 'yellow'):
                         non_yellow_remaining = True
@@ -642,7 +644,6 @@ def next_action():
         print("NEXT 4., yellow cross - end of function")
         return next_actions_list
 
-
     # If yellow face not solved, solve yellow face.
     elif progress == 5:
         print("NEXT 5.00, yellow face - progress found to be 5")
@@ -695,7 +696,6 @@ def next_action():
             top_row_squares = {'lmm':('ltl', 'ltm', 'ltr'), 'bmm':('btl', 'btm', 'btr'), 'rmm':('rtl', 'rtm', 'rtr'), 'fmm':('ftl', 'ftm', 'ftr')}
             centre_squares_for_corners = {'ltl':'lmm', 'btl':'bmm', 'rtl':'rmm', 'ftl':'fmm'}
 
-
             colour_refs = {'blue':0, 'orange':1, 'green':2, 'red':3}
             face_refs = {'ftl':0, 'ltl':1, 'btl':2, 'rtl':3}
             colour_to_algo = {
@@ -716,7 +716,7 @@ def next_action():
                     break
 
             # If not three matching squares, check if any faces have two corners the same colour,
-            if match_found == False:
+            if match_found is False:
                 for face in top_row_squares:
                     if (cube[top_row_squares[face][0]] == cube[top_row_squares[face][2]]):
                         colour_to_match = cube[top_row_squares[face][0]]
@@ -726,7 +726,7 @@ def next_action():
 
             # If either is true, rotate the upper row to the correct face (to match centre square),
             # then depening on which face has the matching corners, perform the appropriate algorithm.
-            if match_found == True:
+            if match_found is True:
 
                 # Calculate how many times to rotate top to match corners to correct face,
                 # and make moves to align corners with correct face.
@@ -749,7 +749,7 @@ def next_action():
                     cube = notation_conversion(cube, action)
 
             # If there are no matching corners, perform algorithm as if left face was matching.
-            if match_found == False:
+            if match_found is False:
                 for action in colour_to_algo['orange']:
                     next_actions_list.append(action)
                     cube = notation_conversion(cube, action)
@@ -772,21 +772,20 @@ def next_action():
             # Check if one face is already solved.
             for face in side_faces:
                 face_solved = True
-                #face = face
                 for square in side_faces[face]:
                     if cube[square] != face:
                         face_solved = False
                         break
-                if face_solved == True:
+                if face_solved is True:
                     face_to_align = face
                     break
             # If no face solved, perform anti-clockwise function based on any face.
-            if face_solved == False:
+            if face_solved is False:
                 for action in face_anticlockwise_moves['green']:
                     next_actions_list.append(action)
                     cube = notation_conversion(cube, action)
             # If a face is solved, check if top row needs moving clockwise or anti-clockwise,
-            if face_solved == True:
+            if face_solved is True:
                 if face_to_align != 'blue':
                     if cube['ftm'] == 'orange':
                         # Therefore clockwise algorithm required.
@@ -816,7 +815,7 @@ def improve_efficiency(next_actions_list):
     # Improve efficiency of moves in next_actions_list.
     # Repeat until no inefficiencies found.
     inefficiencies = True
-    while inefficiencies == True:
+    while inefficiencies is True:
         print("SOLVE - start loop to remove inefficiencies.")
         inefficiencies = False
         # Exchange triple moves with one of the opposite move.
@@ -887,6 +886,7 @@ def move_rc(cube):
 
     return new_cube_colours
 
+
 # R' (anti-clockwise)
 def move_ra(cube):
 
@@ -920,6 +920,7 @@ def move_ra(cube):
     new_cube_colours['bbl'] = cube['dtr']
 
     return new_cube_colours
+
 
 # L (clockwise)
 def move_lc(cube):
@@ -955,6 +956,7 @@ def move_lc(cube):
 
     return new_cube_colours
 
+
 # L' (anti-clockwise)
 def move_la(cube):
 
@@ -988,6 +990,7 @@ def move_la(cube):
     new_cube_colours['bbr'] = cube['utl']
 
     return new_cube_colours
+
 
 # U (clockwise)
 def move_uc(cube):
@@ -1023,6 +1026,7 @@ def move_uc(cube):
 
     return new_cube_colours
 
+
 # U' (anti-clockwise)
 def move_ua(cube):
 
@@ -1056,6 +1060,7 @@ def move_ua(cube):
     new_cube_colours['ftr'] = cube['ltr']
 
     return new_cube_colours
+
 
 # F' (anti-clockwise)
 def move_fa(cube):
@@ -1092,6 +1097,7 @@ def move_fa(cube):
 
     return new_cube_colours
 
+
 # F (clockwise)
 def move_fc(cube):
 
@@ -1127,6 +1133,7 @@ def move_fc(cube):
 
     return new_cube_colours
 
+
 # B (clockwise)
 def move_bc(cube):
 
@@ -1160,6 +1167,7 @@ def move_bc(cube):
     new_cube_colours['utr'] = cube['rbr']
 
     return new_cube_colours
+
 
 # B' (anti-clockwise)
 def move_ba(cube):
@@ -1195,6 +1203,7 @@ def move_ba(cube):
 
     return new_cube_colours
 
+
 # D (clockwise)
 def move_dc(cube):
 
@@ -1228,6 +1237,7 @@ def move_dc(cube):
     new_cube_colours['fbr'] = cube['lbr']
 
     return new_cube_colours
+
 
 # D' (anti-clockwise)
 def move_da(cube):
@@ -1273,12 +1283,14 @@ def right_trigger(cube):
     new_cube_colours = move_ra(new_cube_colours)
     return new_cube_colours
 
+
 # Left trigger
 def left_trigger(cube):
     new_cube_colours = move_la(cube)
     new_cube_colours = move_ua(new_cube_colours)
     new_cube_colours = move_lc(new_cube_colours)
     return new_cube_colours
+
 
 # FURU'R'F' algorithm
 def fururf(cube):

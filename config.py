@@ -1,8 +1,7 @@
+# This config file contains most of the collections of repetitive data.
 
-
-
-
-# Create list of individual faces of each cubelet, referred to as squares and state correct colour of that square.
+# Create list of individual faces of each cubelet,
+# referred to as squares and state correct colour of that square.
 squares = ('bbr', 'bbm', 'bbl', 'bmr', 'bmm', 'bml', 'btr', 'btm', 'btl', 'lbl', 'lml', 'ltl', 'lbm', 'lmm', 'ltm', 'lbr', 'lmr', 'ltr', 'utl', 'utm', 'utr', 'uml', 'umm', 'umr', 'ubl', 'ubm', 'ubr', 'rtr', 'rmr', 'rbr', 'rtm', 'rmm', 'rbm', 'rtl', 'rml', 'rbl', 'ftl', 'ftm', 'ftr', 'fml', 'fmm', 'fmr', 'fbl', 'fbm', 'fbr', 'dtl', 'dtm', 'dtr', 'dml', 'dmm', 'dmr', 'dbl', 'dbm', 'dbr')
 
 colours = ('red', 'blue', 'green', 'yellow', 'orange', 'white')

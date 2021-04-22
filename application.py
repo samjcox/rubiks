@@ -19,7 +19,8 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 
-# ?!?! Ensure responses aren't cached ?!?!?! do I want this ?!?! Sourced from CS50.
+# ?!?! Ensure responses aren't cached ?!?
+# !?! do I want this ?!?! Sourced from CS50.
 @app.after_request
 def after_request(response):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -28,23 +29,26 @@ def after_request(response):
     return response
 
 
-# Configure session to use filesystem (instead of signed cookies), sourced from CS50.
+# Configure session to use filesystem,
+# (instead of signed cookies), sourced from CS50.
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 
-# Setup SQLite database
+# Connect to SQLite database connection
 def db_connect():
     con = sqlite3.connect('rubiks.db')
     con.row_factory = sqlite3.Row
     return con
 
+# Commit and close database
 def db_close(con):
     con.commit()
     con.close()
 
+# Check user is logged in
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -316,7 +320,7 @@ def solve_randomly():
     cube = session["cube"]
     max_number_of_moves = 100000
     move_count = 0
-    for move in range(0,max_number_of_moves):
+    for move in range(0, max_number_of_moves):
         if helpers.solve_progress(cube) == 8:
             for square in config.squares:
                 session["cube"][square] = cube[square]
@@ -359,6 +363,7 @@ def random_move(cube):
     elif y == 11:
         cube = helpers.move_da(cube)
     return cube
+
 
 # Route to provide random moves to user, for user to randomise their own real-life cube.
 @app.route("/randomise_user_cube")
