@@ -5,8 +5,6 @@ This web app will allow a user to input their rubiks cube's arrangement and with
 
 This web app has been created as the final project for CS50.
 
-TEST TEXT ONLY.
-
 ### Environment: Python, HTML, JavaScript, Flask, Jinja, CSS.
 
 ## Main Features of this web app
