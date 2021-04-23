@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Solve
+{% endblock %}
+
+{% block main %}
+
+
+    <h2>Randomise your cube</h2>
+    <p>To genuinely shuffle your cube, please make the following moves.  After making the below moves, please proceed to the "enter" page to begin solving your cube.</p>
+
+
+
+
+
+
+                {% set characters_per_row = 5 %}
+                {% set rows = ((random_moves_list| length) / characters_per_row) | int %}
+                {% set final_row_characters = (random_moves_list | length) % characters_per_row %}
+                {% if final_row_characters > 0 %}
+                    {% set rows = rows + 1 %}
+                {% endif %}
+                {% for row in range(rows) %}
+                    {% set starting_character = row * characters_per_row %}
+                    {{ row + 1 }}:
+                    {% for action in random_moves_list[starting_character:(starting_character + characters_per_row)] %}
+                        {{ action }}
+                    {% endfor %}
+                    </br>
+                {% endfor %}
+
+
+    <br/>
+    <div class="text_and_button_grid">
+        <div><p>After making the above random moves, now enter your cube into the programme:</div>
+        <div><a href=enter><button class="btn btn-primary" type="button">Enter Cube</button></a></p></div>
+    </div>
+
+
+
+{% endblock %}
