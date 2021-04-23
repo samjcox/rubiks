@@ -327,42 +327,12 @@ def solve_randomly():
             return redirect("/solve")
         else:
             move_count = move_count + 1
-            cube = random_move(cube)
+            cube = helpers.random_move(cube)
     for square in config.squares:
         session["cube"][square] = cube[square]
 
     flash(str(move_count) + " randomly picked moves were made.")
     return redirect("/solve")
-
-
-# Select random cube move.
-def random_move(cube):
-    y = random.randint(0, 11)
-    if y == 0:
-        cube = helpers.move_rc(cube)
-    elif y == 1:
-        cube = helpers.move_ra(cube)
-    elif y == 2:
-        cube = helpers.move_lc(cube)
-    elif y == 3:
-        cube = helpers.move_la(cube)
-    elif y == 4:
-        cube = helpers.move_uc(cube)
-    elif y == 5:
-        cube = helpers.move_ua(cube)
-    elif y == 6:
-        cube = helpers.move_fc(cube)
-    elif y == 7:
-        cube = helpers.move_fa(cube)
-    elif y == 8:
-        cube = helpers.move_bc(cube)
-    elif y == 9:
-        cube = helpers.move_ba(cube)
-    elif y == 10:
-        cube = helpers.move_dc(cube)
-    elif y == 11:
-        cube = helpers.move_da(cube)
-    return cube
 
 
 # Route to provide random moves to user, for user to randomise their own real-life cube.
@@ -399,7 +369,7 @@ def random_cube():
     random_moves = 50
 
     for x in range(0, random_moves):
-        cube = random_move(cube)
+        cube = helpers.random_move(cube)
 
     # Create new cube in databse:
     create_cube()

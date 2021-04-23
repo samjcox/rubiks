@@ -1,5 +1,36 @@
 from flask import session
 import config
+import random
+
+
+# Select random cube move.
+def random_move(cube):
+    y = random.randint(0, 11)
+    if y == 0:
+        cube = move_rc(cube)
+    elif y == 1:
+        cube = move_ra(cube)
+    elif y == 2:
+        cube = move_lc(cube)
+    elif y == 3:
+        cube = move_la(cube)
+    elif y == 4:
+        cube = move_uc(cube)
+    elif y == 5:
+        cube = move_ua(cube)
+    elif y == 6:
+        cube = move_fc(cube)
+    elif y == 7:
+        cube = move_fa(cube)
+    elif y == 8:
+        cube = move_bc(cube)
+    elif y == 9:
+        cube = move_ba(cube)
+    elif y == 10:
+        cube = move_dc(cube)
+    elif y == 11:
+        cube = move_da(cube)
+    return cube
 
 
 # Determine stage of solving (manual stage checking):
