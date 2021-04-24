@@ -5,7 +5,7 @@ This web app will allow a user to input their rubiks cube's arrangement and with
 
 This web app has been created as the final project for CS50.
 
-### Environment: Python, HTML, JavaScript, Flask, Jinja, CSS.
+### Environment: # Python, HTML, JavaScript, Flask, Jinja, CSS.
 
 ## Main Features of this web app
 - The main intent behind this web app is for the user to enter their cube into the system, for the app to tell the user what moves are required to solve the cube.
@@ -28,7 +28,7 @@ This web app has been created as the final project for CS50.
 
 ## Files & Structure
 ### Project folder
-- application.py - main application include general functions.
+- app.py - main application include general functions.
 - helpers.py - contains detailed cube move algorithms and solve algorithms.
 - config.py - contains repeatedly used lists and dictionaries.
 - rubiks.db - database contains two tables.  The 'users' table includes username and password. The 'cubes' table includes the current state of all cubes.  More details of database structure included below.
