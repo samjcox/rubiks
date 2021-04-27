@@ -18,8 +18,7 @@ app = Flask(__name__)
 # Auto-reload templates
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
-# ?!?! Ensure responses aren't cached ?!?
-# !?! do I want this ?!?! Sourced from CS50.
+# Ensure responses aren't cached. Sourced from CS50.
 @app.after_request
 def after_request(response):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -380,6 +379,8 @@ def random_cube():
     for square in cube:
         # Update database with colour of each square. There may be a
         # better way to update 54 SQL columns, to be investigated.
+        # Note that as the input to the below SQL query is hard-coded,
+        # there should be no risk of SQL injection attack.
         update_query = f"UPDATE cubes SET {square} = ? WHERE id = ?"
         cur.execute(update_query, (cube[square], session["current_cube_id"]))
     # Commit & close database connection.
@@ -408,6 +409,8 @@ def enter():
         con = db_connect()
         cur = con.cursor()
         # Enter the submitted data into the dictionary:
+        # Note that as the input to the below SQL query is hard-coded,
+        # there should be no risk of SQL injection attack.
         for square in cube:
             square_colour = request.form.get(square)
             cube[square] = square_colour
@@ -478,6 +481,8 @@ def copy():
     session["cube"] = temp_cube
     session["cube"]["id"] = session["current_cube_id"]
     # Save new cube contents to database.
+    # Note that as the input to the below SQL query is hard-coded,
+    # there should be no risk of SQL injection attack.
     for item in temp_cube:
         update_query = f"UPDATE cubes SET {item} = ? WHERE id = ?"
         cur.execute(update_query, (session["cube"][item], session["current_cube_id"],))
@@ -502,6 +507,8 @@ def amend():
         con = db_connect()
         cur = con.cursor()
         # Update database with user input from form.
+        # Note that as the input to the below SQL query is hard-coded,
+        # there should be no risk of SQL injection attack.
         for square in config.squares:
             square_colour = request.form.get(square)
             session["cube"][square] = square_colour
@@ -535,7 +542,8 @@ def solve():
 
     # Else if cube is not solved, determine next move required.
     else:
-        # Prepare temp dictionary.
+        # Start with "next_cube_colours" matching current cube, ready
+        # for moves to be mdae.
         session["next_cube_colours"] = session["cube"]
         print("SOLVE - NEXT_CUBE_COLOURS CREATED.")
         # Create list of moves required to
@@ -610,6 +618,8 @@ def next_stage():
     for square in config.squares:
         session["cube"][square] = session["next_cube_colours"][square]
         # Update the database with new cube state.
+        # Note that as the input to the below SQL query is hard-coded,
+        # there should be no risk of SQL injection attack.
         update_query = f"UPDATE cubes SET {square} = ? WHERE id = ?"
         cur.execute(update_query, (session['cube'][square], session["current_cube_id"],))
     # Commit & close database connection.
