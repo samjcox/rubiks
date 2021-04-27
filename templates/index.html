@@ -78,7 +78,7 @@
                     <tr>
                         <td>{{ id.id }}</td>
                         <td>{{ id.stage }}/8</td>
-                        <td><form method = "post" action="/load"><button name="load" class="btn btn-outline-primary btn-sm" type="submit" value={{ id.id }}>Load</button></form></td>
+                        <td><form method = "post" action="/load"><button name="load" onclick="loading_on()" class="btn btn-outline-primary btn-sm" type="submit" value={{ id.id }}>Load</button></form></td>
                         <td>{{ id.created }}</td>
                         <td>{{ id.check }}</td>
                         <td><form method = "post" action="/amend_from_list"><button name="amend" class="btn btn-outline-success btn-sm" type="submit" value={{ id.id }}>Amend</button></form></td>
