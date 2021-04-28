@@ -335,11 +335,12 @@ def solve_randomly():
 
 # Provide random moves to user, for user to randomise real-life cube.
 # This will generte a list of moves to make; not amend the cube itself.
-@app.route("/randomise_user_cube")
+# Number of random moves to make will default to 30 unless flask url
+# argument received to state otherwise.
+@app.route("/randomise_user_cube", defaults={"random_moves":30})
+@app.route("/randomise_user_cube/<int:random_moves>")
 @login_required
-def randomise_user_cube():
-    # Define number of random moves to make.
-    random_moves = 20
+def randomise_user_cube(random_moves):
     # Initialise moves list & move counter.
     random_moves_list = []
     move_count = 0
