@@ -12,11 +12,31 @@
     <p>If you actually would prefer to play around with the website without entering an actual cube, you can use either of the following two buttons.  Otherwise if you want to solve an actual real-life cube, please enter it in the Manual Entry section below.</p>
     <h2>Random Cube Generation:</h2>
 
-    <div class="text_and_button_grid"><div><p>Push this button to generate a random solvable rubik's cube (in order to test the website!).  This will take a solved cube, then perform a random selection of moves on the cube:</p></div>
-    <div><a href=random_cube><button class="btn btn-primary" onclick="loading_on()" type="button">Random Solvable Cube</button></a></div>
-    <div><p>Push this button to randomly fill the rubik's cube with colours that are likely to be invalid (to test the input validation and cube amendment):</p></div>
-    <div><a href=random_squares><button class="btn btn-primary" onclick="loading_on()" type="button">Random Unsolvable Cube</button></a></div></div>
-
+    <div class="row" style="padding: 5px 0px">
+        <div class="col-sm">
+            Push this button to generate a random solvable rubik's cube (in order to test the website!).  This will take a solved cube, then perform a random selection of moves on the cube:
+        </div>
+        <div class="col-xs-auto centre">
+            <a href=random_cube><button style="width:210px;" onclick="loading_on()" class="btn btn-primary" type="button">Random Solvable Cube</button></a>
+        </div>
+    </div>
+    <div class="row" style="padding: 5px 0px">
+        <div class="col-sm">
+            Push this button to randomly fill the rubik's cube with colours that are likely to be invalid (to test the input validation and cube amendment):
+        </div>
+        <div class="col-xs-auto centre">
+            <a href=random_squares><button style="width:210px;" onclick="loading_on()" class="btn btn-primary" type="button">Random Unsolvable Cube</button></a>
+        </div>
+    </div>
+    <div class="row" style="padding: 5px 0px">
+        <div class="col-sm">
+            If you have a real-life cube and would like to shuffle it before trying to solve, use the Randomiser function:
+        </div>
+        <div class="col-xs-auto centre">
+            <a href=enter><button style="width:210px;" class="btn btn-primary" type="button">Use Randomiser</button></a>
+        </div>
+    </div>
+    <br/>
     <h2>Manual Entry (for an actual cube):</h2>
 
 
