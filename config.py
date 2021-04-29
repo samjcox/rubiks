@@ -63,7 +63,30 @@ squares = (
     'dbr', # down (bottom) face, bottom row, right column.
     )
 
+# Define list of colours.
 colours = ('red', 'blue', 'green', 'yellow', 'orange', 'white')
+
+# Define a solved cube.
+solved_cube = {
+    'bbr':'green', 'bbm':'green', 'bbl':'green',
+    'bmr':'green', 'bmm':'green', 'bml':'green',
+    'btr':'green', 'btm':'green', 'btl':'green',
+    'lbl':'orange', 'lml':'orange', 'ltl':'orange',
+    'lbm':'orange', 'lmm':'orange', 'ltm':'orange',
+    'lbr':'orange', 'lmr':'orange', 'ltr':'orange',
+    'utl':'yellow', 'utm':'yellow', 'utr':'yellow',
+    'uml':'yellow', 'umm':'yellow', 'umr':'yellow',
+    'ubl':'yellow', 'ubm':'yellow', 'ubr':'yellow',
+    'rtr':'red', 'rmr':'red', 'rbr':'red',
+    'rtm':'red', 'rmm':'red', 'rbm':'red',
+    'rtl':'red', 'rml':'red', 'rbl':'red',
+    'ftl':'blue', 'ftm':'blue', 'ftr':'blue',
+    'fml':'blue', 'fmm':'blue', 'fmr':'blue',
+    'fbl':'blue', 'fbm':'blue', 'fbr':'blue',
+    'dtl':'white', 'dtm':'white', 'dtr':'white',
+    'dml':'white', 'dmm':'white', 'dmr':'white',
+    'dbl':'white', 'dbm':'white', 'dbr':'white'
+}
 
 # Define squares on each face.
 faces = {
@@ -99,28 +122,34 @@ faces = {
         )
 }
 
+# Solve Progress, list of squares in middle row per face.
+middle_rows_by_face = [
+    [('bmr', 'bmm', 'bml'), 'green'],
+    [('lml', 'lmm', 'lmr'), 'orange'],
+    [('rmr', 'rmm', 'rml'), 'red'],
+    [('fml', 'fmm', 'fmr'), 'blue']
+]
 
-# Define a solved cube.
-solved_cube = {
-    'bbr':'green', 'bbm':'green', 'bbl':'green',
-    'bmr':'green', 'bmm':'green', 'bml':'green',
-    'btr':'green', 'btm':'green', 'btl':'green',
-    'lbl':'orange', 'lml':'orange', 'ltl':'orange',
-    'lbm':'orange', 'lmm':'orange', 'ltm':'orange',
-    'lbr':'orange', 'lmr':'orange', 'ltr':'orange',
-    'utl':'yellow', 'utm':'yellow', 'utr':'yellow',
-    'uml':'yellow', 'umm':'yellow', 'umr':'yellow',
-    'ubl':'yellow', 'ubm':'yellow', 'ubr':'yellow',
-    'rtr':'red', 'rmr':'red', 'rbr':'red',
-    'rtm':'red', 'rmm':'red', 'rbm':'red',
-    'rtl':'red', 'rml':'red', 'rbl':'red',
-    'ftl':'blue', 'ftm':'blue', 'ftr':'blue',
-    'fml':'blue', 'fmm':'blue', 'fmr':'blue',
-    'fbl':'blue', 'fbm':'blue', 'fbr':'blue',
-    'dtl':'white', 'dtm':'white', 'dtr':'white',
-    'dml':'white', 'dmm':'white', 'dmr':'white',
-    'dbl':'white', 'dbm':'white', 'dbr':'white'
-}
+# Solve Progress, list of top row corner squares per face.
+top_corners_by_face = [
+    [('btr', 'btl'), 'green'],
+    [('ltl', 'ltr'), 'orange'],
+    [('rtr', 'rtl'), 'red'],
+    [('ftl', 'ftr'), 'blue']
+]
+
+# Solve Progress, list of top row squares per face.
+top_rows_by_face = [
+    [('btr', 'btm', 'btl'), 'green'],
+    [('ltl', 'ltm', 'ltr'), 'orange'],
+    [('rtr', 'rtm', 'rtl'), 'red'],
+    [('ftl', 'ftm', 'ftr'), 'blue']
+]
+
+
+
+
+
 
 # List of possible moves.
 possible_moves = [
