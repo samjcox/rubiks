@@ -61,30 +61,12 @@ def solve_progress(cube):
 
     # Check Stage 3 - Middle Row stage.
     # Check if middle row is solved, working through each face.
-    # Check if middle row of green face is solved.
-    middle_row_squares_green = ('bmr', 'bmm', 'bml')
-    for square in middle_row_squares_green:
-        if cube[square] != 'green':
-            solve_progress = 3
-            return solve_progress
-    # Check if middle row of orange face is solved.
-    middle_row_squares_orange = ('lml', 'lmm', 'lmr')
-    for square in middle_row_squares_orange:
-        if cube[square] != 'orange':
-            solve_progress = 3
-            return solve_progress
-    # Check if middle row of red face is solved.
-    middle_row_squares_red = ('rmr', 'rmm', 'rml')
-    for square in middle_row_squares_red:
-        if cube[square] != 'red':
-            solve_progress = 3
-            return solve_progress
-    # Check if middle row of blue face is solved.
-    middle_row_squares_blue = ('fml', 'fmm', 'fmr')
-    for square in middle_row_squares_blue:
-        if cube[square] != 'blue':
-            solve_progress = 3
-            return solve_progress
+    # Iterate through each face first.
+    for face in config.middle_rows_by_face:
+        for square in face[0]:
+            if cube[square] != face[1]:
+                solve_progress = 3
+                return solve_progress
 
     # Check Stage 4 - Yellow Cross stage.
     # Check if yellow cross is solved.
@@ -105,56 +87,21 @@ def solve_progress(cube):
     # Check Stage 6 - Top Corners stage.
     # Check if top corners are solved.
     # Check if top corners of green face are solved. 
-    top_corners_squares_green = ('btr', 'btl')
-    for square in top_corners_squares_green:
-        if cube[square] != 'green':
-            solve_progress = 6
-            return solve_progress
-    # Check if top corners of orange face are solved. 
-    top_corners_squares_orange = ('ltl', 'ltr')
-    for square in top_corners_squares_orange:
-        if cube[square] != 'orange':
-            solve_progress = 6
-            return solve_progress
-    # Check if top corners of red face are solved. 
-    top_corners_squares_red = ('rtr', 'rtl')
-    for square in top_corners_squares_red:
-        if cube[square] != 'red':
-            solve_progress = 6
-            return solve_progress
-    # Check if top corners of blue face are solved. 
-    top_corners_squares_blue = ('ftl', 'ftr')
-    for square in top_corners_squares_blue:
-        if cube[square] != 'blue':
-            solve_progress = 6
-            return solve_progress
+    for face in config.top_corners_by_face:
+        for square in face[0]:
+            if cube[square] != face[1]:
+                solve_progress = 6
+                return solve_progress
 
     # Check Stage 7 - Top Row stage.
     # Check if top row is solved.
     # Check if top row of green face is solved.
-    top_row_squares_green = ('btr', 'btm', 'btl')
-    for square in top_row_squares_green:
-        if cube[square] != 'green':
-            solve_progress = 7
-            return solve_progress
-    # Check if top row of orange face is solved.
-    top_row_squares_orange = ('ltl', 'ltm', 'ltr')
-    for square in top_row_squares_orange:
-        if cube[square] != 'orange':
-            solve_progress = 7
-            return solve_progress
-    # Check if top row of red face is solved.
-    top_row_squares_red = ('rtr', 'rtm', 'rtl')
-    for square in top_row_squares_red:
-        if cube[square] != 'red':
-            solve_progress = 7
-            return solve_progress
-    # Check if top row of blue face is solved.
-    top_row_squares_blue = ('ftl', 'ftm', 'ftr')
-    for square in top_row_squares_blue:
-        if cube[square] != 'blue':
-            solve_progress = 7
-            return solve_progress
+    for face in config.top_rows_by_face:
+        for square in face[0]:
+            if cube[square] != face[1]:
+                solve_progress = 7
+                return solve_progress
+
     # If all of the above conditions are not met, then cube is solved.
     solve_progress = 8
     return solve_progress
