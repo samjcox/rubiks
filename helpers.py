@@ -5,33 +5,16 @@ import random # Used to generate random numbers.
 
 # Select random cube move and make that move to the input cube.
 def random_move(cube):
-    # Generate random number between 0 and 11 inclusive.
-    y = random.randint(0, 11)
-    # Based on random number, perform appropriate move function.
-    if y == 0:
-        cube = move_rc(cube)
-    elif y == 1:
-        cube = move_ra(cube)
-    elif y == 2:
-        cube = move_lc(cube)
-    elif y == 3:
-        cube = move_la(cube)
-    elif y == 4:
-        cube = move_uc(cube)
-    elif y == 5:
-        cube = move_ua(cube)
-    elif y == 6:
-        cube = move_fc(cube)
-    elif y == 7:
-        cube = move_fa(cube)
-    elif y == 8:
-        cube = move_bc(cube)
-    elif y == 9:
-        cube = move_ba(cube)
-    elif y == 10:
-        cube = move_dc(cube)
-    elif y == 11:
-        cube = move_da(cube)
+    # List of functions of each possible move.
+    move_functions = [
+        move_rc(cube), move_ra(cube), move_lc(cube),
+        move_la(cube), move_uc(cube), move_ua(cube),
+        move_fc(cube), move_fa(cube), move_bc(cube),
+        move_ba(cube), move_dc(cube), move_da(cube)
+    ]
+    # Randomly select a move function.
+    cube = random.choice(move_functions)
+    # Return cube state after move is made.
     return cube
 
 
