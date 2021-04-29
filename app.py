@@ -35,7 +35,9 @@ Session(app)
 
 # Connect to SQLite database connection.
 def db_connect():
+    # Create connection object.
     con = sqlite3.connect('rubiks.db')
+    # Allow access to columns by name.
     con.row_factory = sqlite3.Row
     return con
 
@@ -155,10 +157,10 @@ def register():
         # Automatically log user in.
         cur.execute("SELECT id FROM users WHERE username = ?", (request.form.get("username"),))
         user_id = [dict(row) for row in cur.fetchall()]
-        # Commit & close database connection.
-        db_close(con)
         session['user_id'] = user_id[0]["id"]
         session["username"] = request.form.get("username")
+        # Commit & close database connection.
+        db_close(con)
         # Send user to homepage after registration and login complete.
         flash("You have been registered successfully.")
         return redirect("/")
@@ -293,7 +295,7 @@ def check_cube():
         db_close(con)
         # Flash message to confirm successful save.
         flash("Cube " + str(session["current_cube_id"]) + " has been checked and is correct.")
-        print("CHECK CUBE NO ERRORS COMPLETE.")
+        print("CHECK_CUBE - Completed with no errors.")
         return redirect("/solve")
 
     # If errors found, list those errors and ask user to correct.
@@ -304,7 +306,7 @@ def check_cube():
         db_close(con)
         # Flash message to advise that error needs to be resolved.
         flash("Errors found in your cube entry, please resolve before solving.")
-        print("CHECK CUBE WITH ERRORS COMPLETE.")
+        print("CHECK CUBE - Errors found.")
         return redirect("/amend")
 
 
@@ -388,7 +390,7 @@ def random_cube():
     db_close(con)
     # Update session cube & return cube check:
     session["cube"] = cube
-    print("RANDOM CUBE FUNCTION COMPLETE.")
+    print("RANDOM CUBE - Function complete.")
     return check_cube()
 
 
@@ -523,7 +525,7 @@ def amend():
 @app.route("/solve", methods=["POST", "GET"])
 @login_required
 def solve():
-    print("SOLVE - START SOLVE FUNCTION.")
+    print("SOLVE - Start solve function.")
     # Take current session cube and check progress.
     current_cube_id = session["current_cube_id"]
     progress = helpers.solve_progress(session["cube"])
@@ -534,7 +536,6 @@ def solve():
     cur.execute("UPDATE cubes SET 'stage' = ? WHERE id = ?", (progress, session["current_cube_id"],))
     # Commit & close database connection.
     db_close(con)
-    print("SOLVE - PROGRESS CHECK COMPLETED")
     print("SOLVE - Progress stage found to be " + str(progress))
     
     # If cube is completed already, show 'complete' page.
@@ -546,7 +547,6 @@ def solve():
         # Start with "next_cube_colours" matching current cube, ready
         # for moves to be mdae.
         session["next_cube_colours"] = session["cube"]
-        print("SOLVE - NEXT_CUBE_COLOURS CREATED.")
         # Create list of moves required to
         # progress to solve the current stage of the cube.
         next_actions_list = helpers.next_action()
@@ -561,7 +561,7 @@ def solve():
 @app.route("/solve_entirely")
 @login_required
 def solve_entirely():
-    print("Complete solve function started.")
+    print("SOLVE ENTIRELY - Single stage solve function started.")
     # Initialise list for required moves.
     complete_solve_list = []
     # Prepare temp dictionary.
@@ -595,7 +595,7 @@ def solve_entirely():
     # Else the stage must be 7 (last stage) so determine moves for
     # final stage then render page with list of moves.
     else:
-        print("SOLVE ENTIRELY - Solving stage is 7.")
+        print("SOLVE ENTIRELY - Solving stage is equal to 7.")
         # Append moves required for that solve stage to the overall list.
         next_moves_list = helpers.next_action()
         for move in next_moves_list:
@@ -625,5 +625,6 @@ def next_stage():
         cur.execute(update_query, (session['cube'][square], session["current_cube_id"],))
     # Commit & close database connection.
     db_close(con)
+    print("NEXT_STAGE - Function complete.")
     # Return to solve page to solve this new cube state.
     return redirect("/solve")
