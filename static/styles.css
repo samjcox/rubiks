@@ -21,6 +21,10 @@
     height: 100%;
 }
 
+.button-padding {
+    padding: 5px 0px;
+}
+
 .text_and_button_grid {
     display: grid;
     grid-template-rows: auto;
@@ -101,6 +105,14 @@
     }
 
 /* View cube formatting */
+    .cube-card {
+        min-width: 250px;
+    }
+
+    .moves-card {
+        min-width: 240px;
+    }
+
     .card-body {
         display: flex;
         justify-content: center;
