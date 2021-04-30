@@ -122,34 +122,49 @@ faces = {
         )
 }
 
-# Solve Progress, list of squares in middle row per face.
-middle_rows_by_face = [
-    [('bmr', 'bmm', 'bml'), 'green'],
-    [('lml', 'lmm', 'lmr'), 'orange'],
-    [('rmr', 'rmm', 'rml'), 'red'],
-    [('fml', 'fmm', 'fmr'), 'blue']
+# Check stages - listed by Stage, then,squares, then colour criteria.
+check_stages = [
+    [2, [
+        [('dtl', 'dtm', 'dtr',
+            'dml', 'dmm', 'dmr',
+            'dbl', 'dbm', 'dbr'),
+            'white']
+        ]
+    ],
+    [3, [
+        [('bmr', 'bmm', 'bml'), 'green'],
+        [('lml', 'lmm', 'lmr'), 'orange'],
+        [('rmr', 'rmm', 'rml'), 'red'],
+        [('fml', 'fmm', 'fmr'), 'blue']
+        ]
+    ],
+    [4, [
+        [('utm', 'uml', 'umm',
+            'umr', 'ubm'), 'yellow']
+        ]
+    ],
+    [5, [
+        [('utl', 'utm', 'utr',
+            'uml', 'umm', 'umr',
+            'ubl', 'ubm', 'ubr'),
+            'yellow']
+        ]
+    ],
+    [6, [
+        [('btr', 'btl'), 'green'],
+        [('ltl', 'ltr'), 'orange'],
+        [('rtr', 'rtl'), 'red'],
+        [('ftl', 'ftr'), 'blue']
+        ]
+    ],
+    [7, [
+        [('btr', 'btm', 'btl'), 'green'],
+        [('ltl', 'ltm', 'ltr'), 'orange'],
+        [('rtr', 'rtm', 'rtl'), 'red'],
+        [('ftl', 'ftm', 'ftr'), 'blue']
+        ]
+    ]
 ]
-
-# Solve Progress, list of top row corner squares per face.
-top_corners_by_face = [
-    [('btr', 'btl'), 'green'],
-    [('ltl', 'ltr'), 'orange'],
-    [('rtr', 'rtl'), 'red'],
-    [('ftl', 'ftr'), 'blue']
-]
-
-# Solve Progress, list of top row squares per face.
-top_rows_by_face = [
-    [('btr', 'btm', 'btl'), 'green'],
-    [('ltl', 'ltm', 'ltr'), 'orange'],
-    [('rtr', 'rtm', 'rtl'), 'red'],
-    [('ftl', 'ftm', 'ftr'), 'blue']
-]
-
-
-
-
-
 
 # List of possible moves.
 possible_moves = [

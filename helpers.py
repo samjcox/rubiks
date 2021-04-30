@@ -22,7 +22,6 @@ def random_move(cube):
 def solve_progress(cube):
     # Initialise counter for solved stages.
     solve_progress = 0
-
     # Check Stage 0&1 - Daisy & White Cross stage.
     # Check if white cross & daisy are solved.
     # In this one instance, two stages are check together due to the
@@ -46,63 +45,22 @@ def solve_progress(cube):
     if daisy_solved is False:
         solve_progress = 0
         return solve_progress
-    # if white cross is first unsolved stage, return progress as 1.
+    # If white cross is first unsolved stage, return progress as 1.
     elif white_cross_solved is False:
         solve_progress = 1
         return solve_progress
-
-    # Check Stage 2 - White Face stage.
-    # Check if white face is solved.
-    white_face_squares = config.faces['white']
-    for square in white_face_squares:
-        if cube[square] != 'white':
-                solve_progress = 2
-                return solve_progress
-
-    # Check Stage 3 - Middle Row stage.
-    # Check if middle row is solved, working through each face.
-    # Iterate through each face first.
-    for face in config.middle_rows_by_face:
-        for square in face[0]:
-            if cube[square] != face[1]:
-                solve_progress = 3
-                return solve_progress
-
-    # Check Stage 4 - Yellow Cross stage.
-    # Check if yellow cross is solved.
-    yellow_cross_squares = ('utm', 'uml', 'umm', 'umr', 'ubm')
-    for square in yellow_cross_squares:
-        if cube[square] != 'yellow':
-            solve_progress = 4
-            return solve_progress
-
-    # Check Stage 5 - Yellow Face stage.
-    # Check if yellow face is solved.    
-    yellow_face_squares = config.faces['yellow']
-    for square in yellow_face_squares:
-        if cube[square] != 'yellow':
-            solve_progress = 5
-            return solve_progress
-
-    # Check Stage 6 - Top Corners stage.
-    # Check if top corners are solved.
-    # Check if top corners of green face are solved. 
-    for face in config.top_corners_by_face:
-        for square in face[0]:
-            if cube[square] != face[1]:
-                solve_progress = 6
-                return solve_progress
-
-    # Check Stage 7 - Top Row stage.
-    # Check if top row is solved.
-    # Check if top row of green face is solved.
-    for face in config.top_rows_by_face:
-        for square in face[0]:
-            if cube[square] != face[1]:
-                solve_progress = 7
-                return solve_progress
-
-    # If all of the above conditions are not met, then cube is solved.
+    # Solve process is linear from stage 2 onwards.
+    # Check each stage against criteria. 
+    for stage in config.check_stages:
+        # Move through faces as required (sometimes only one face).
+        for face in stage[1]:
+            # Move through squares on face (not always the full face).
+            for square in face[0]:
+                # Check if colour of square matches criteria.
+                if cube[square] != face[1]:
+                    solve_progress = stage[0]
+                    return solve_progress
+    # If none of the above criteria have been met, then cube is solved.        
     solve_progress = 8
     return solve_progress
 
