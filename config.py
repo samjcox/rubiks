@@ -174,6 +174,22 @@ possible_moves = [
     "B'", "D", "D'"
 ]
 
+# Conversion of Cube Notation to move function.
+convert_notation_to_move = {
+    "R": "move_rc(cube)",
+    "R'": "move_ra(cube)",
+    "L": "move_lc(cube)",
+    "L'": "move_la(cube)",
+    "U": "move_uc(cube)",
+    "U'": "move_ua(cube)",
+    "D": "move_dc(cube)",
+    "D'": "move_da(cube)",
+    "B": "move_bc(cube)",
+    "B'": "move_ba(cube)",
+    "F": "move_fc(cube)",
+    "F'": "move_fa(cube)"
+}
+
 # Names of each stage.
 stage_names = [
     "Daisy", "White Cross", "White Face",

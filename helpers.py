@@ -67,37 +67,11 @@ def solve_progress(cube):
 
 # Function to convert cube notation from a string into moves on a cube.
 def notation_conversion(cube, notation):
-
-    # Initialise dictionary for modificed cube.
-    new_cube_colours = {}
-    # Make appropriate move, depending on characters received.
-    if notation == "R":
-        new_cube_colours = move_rc(cube)
-    elif notation == "R'":
-        new_cube_colours = move_ra(cube)
-    elif notation == "L":
-        new_cube_colours = move_lc(cube)
-    elif notation == "L'":
-        new_cube_colours = move_la(cube)
-    elif notation == "U":
-        new_cube_colours = move_uc(cube)
-    elif notation == "U'":
-        new_cube_colours = move_ua(cube)
-    elif notation == "D":
-        new_cube_colours = move_dc(cube)
-    elif notation == "D'":
-        new_cube_colours = move_da(cube)
-    elif notation == "B":
-        new_cube_colours = move_bc(cube)
-    elif notation == "B'":
-        new_cube_colours = move_ba(cube)
-    elif notation == "F":
-        new_cube_colours = move_fc(cube)
-    elif notation == "F'":
-        new_cube_colours = move_fa(cube)
-    # Return dictionary of modified cube condition.
-    return new_cube_colours
-
+    # Lookup the Cube Notation of move to be made, and return a string
+    # of required move function.
+    move_to_make = config.convert_notation_to_move[notation]
+    # Return required fuction, with function as string.
+    return eval(move_to_make)
 
 # Determine what moves are required to progress solving the cube.
 def next_action():
