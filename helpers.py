@@ -73,9 +73,9 @@ def notation_conversion(cube, notation):
     # Return required fuction, with function as string.
     return eval(move_to_make)
 
+
 # Determine what moves are required to progress solving the cube.
 def next_action():
-
     print("NEXT - START NEXT_ACTION FUNCTION")
     # Prepare temporary dictionary and check current progress. 
     cube = session["next_cube_colours"]
@@ -84,39 +84,9 @@ def next_action():
     # progress to solve the current stage of the cube.
     next_actions_list = []
     print("NEXT - FORMALITIES COMPLETED.")
-    # If daisy not solved, solve daisy stage.
-    if progress == 0:
-        print("NEXT - PROGRESS FOUND TO BE 0.")
-        next_actions_list = solve_stage_0(cube, progress, next_actions_list)
-    # If white cross not solved, solve white cross.
-    elif progress == 1:
-        print("NEXT - PROGRESS FOUND TO BE 1.")
-        next_actions_list = solve_stage_1(cube, progress, next_actions_list)
-    # If white face not solved, solve white face.
-    elif progress == 2:
-        print("NEXT - PROGRESS FOUND TO BE 2")
-        next_actions_list = solve_stage_2(cube, progress, next_actions_list)
-    # If middle row not solved, solve middle row.
-    elif progress == 3:
-        print("NEXT 3.00, middle row - progress found to be 3")
-        next_actions_list = solve_stage_3(cube, progress, next_actions_list)
-    # If yellow cross not solved, solve yellow cross.
-    elif progress == 4:
-        print("NEXT 4.00, yellow cross - progress found to be 4")
-        next_actions_list = solve_stage_4(cube, progress, next_actions_list)
-    # If yellow face not solved, solve yellow face.
-    elif progress == 5:
-        print("NEXT 5.00, yellow face - progress found to be 5")
-        next_actions_list = solve_stage_5(cube, progress, next_actions_list)
-    # If top corners not solved, solve top corners.
-    elif progress == 6:
-        print("NEXT 6.00, top corners - progress found to be 6")
-        next_actions_list = solve_stage_6(cube, progress, next_actions_list)
-    # If top row not solved, solve top row.
-    elif progress == 7:
-        print("NEXT 7.00, top row - progress found to be 7")
-        next_actions_list = solve_stage_7(cube, progress, next_actions_list)
-    # Return list of actions required, from appropriate function above.
+    # Run appropriate solve function depending on current progress.
+    function_as_string = f'solve_stage_{progress}(cube, progress, next_actions_list)'
+    next_actions_list = eval(function_as_string)
     return next_actions_list
         
 
@@ -125,7 +95,7 @@ def next_action():
 def solve_stage_0(cube, progress, next_actions_list):
     # Loop through to progressively work towards solving stage 0.
     while progress == 0:
-        print("NEXT - PROGRESS STILL 0.")
+        print("NEXT 0.00, daisy - PROGRESS FOUND TO BE 0.")
         # Start moving white edge pieces from bottom face to top face.
         bottom_face_edge_squares = ('dtm', 'dml', 'dmr', 'dbm')
         print("NEXT - BEGIN ITERATION THROUGH BOTTOM FACE.")
@@ -238,7 +208,7 @@ def solve_stage_0(cube, progress, next_actions_list):
 # Determine moves required to solve Stage 1, the Wwhite Cross stage.
 def solve_stage_1(cube, progress, next_actions_list):
     while progress == 1:
-        print("NEXT - PROGRESS STILL 1.")
+        print("NEXT 1.00,  white cross - PROGRESS FOUND TO BE 1.")
         # Move white squares from daisy on top face, to bottom face.
         # Progressively check if the top row middle square of each face
         # is in appropriate position, if not rotate top row until it
@@ -312,7 +282,7 @@ def solve_stage_1(cube, progress, next_actions_list):
 # Determine moves required to solve Stage 2, the White Face stage.
 def solve_stage_2(cube, progress, next_actions_list):
     while progress == 2:
-        print("NEXT - PROGRESS STILL 2")
+        print("NEXT 2.00, white face - PROGRESS FOUND TO BE 2")
         # Find any white squares in top row and move them to bottom
         # face by aligning the adjacent square to its correct face and
         # then making the correct sequence of moves.
@@ -490,6 +460,7 @@ def solve_stage_3(cube, progress, next_actions_list):
     # count to return an error after a large number of loops.
     loop_count = 0
     while progress == 3:
+        print("NEXT 3.00, middle row - progress found to be 3")
         # Maximum loop count to return error if endless loop occurs.
         loop_count = loop_count + 1
         print("Loop count = " + str(loop_count))
@@ -629,6 +600,7 @@ def solve_stage_4(cube, progress, next_actions_list):
     # squares already on the top face and their arrangement compared
     # to each other. 
     while progress == 4:
+        print("NEXT 4.00, yellow cross - progress found to be 4")
         # Count yellow edge pieces on top face.
         top_face_edge_squares = ('utm', 'umr', 'ubm', 'uml')
         squares_found = 0
@@ -724,6 +696,7 @@ def solve_stage_5(cube, progress, next_actions_list):
     rururuur = ("R", "U", "R'", "U", "R", "U", "U", "R'")
 
     while progress == 5:
+        print("NEXT 5.00, yellow face - progress found to be 5")
         # Count yellow corner squares on top face.
         top_face_corner_squares = ('utl', 'utr', 'ubr', 'ubl')
         squares_found = 0
@@ -788,6 +761,7 @@ def solve_stage_6(cube, progress, next_actions_list):
     top_row_squares = config.top_row_squares
         
     while progress == 6:
+        print("NEXT 6.00, top corners - progress found to be 6")
         match_found = False
         # Check if any faces have three matching squares in top row.
         for face in top_row_squares:
@@ -891,6 +865,7 @@ def solve_stage_7(cube, progress, next_actions_list):
         key:config.faces[key] for key in ['green', 'orange', 'red', 'blue']
         }
     while progress == 7:
+        print("NEXT 7.00, top row - progress found to be 7")
         # Check if one face is already solved.
         for face in side_faces:
             # Start assuming the face is solved.
