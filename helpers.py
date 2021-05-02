@@ -290,13 +290,13 @@ def solve_stage_2(cube, progress, next_actions_list):
         # this step, so this loops round until all squares in top row
         # have been moved to bottom face. 
         while True:
-            print("NEXT - FINDING WHITE SQUARES ON TOP ROW")
+            print("NEXT 2.01 - FINDING WHITE SQUARES ON TOP ROW")
             # Start loop as False, in case no squares are found.
             squares_found = False
             for square in config.top_row_corner_squares:
                 # Find white squares in the top row corners.
                 if cube[square] == 'white':
-                    print("NEXT - WHITE SQUARE FOUND ON TOP ROW - " + square)
+                    print("NEXT 2.02 - WHITE SQUARE FOUND ON TOP ROW - " + square)
                     # Mark squares_found as true to loop through again.
                     squares_found = True
                     # Check if adjacent square matches the adjacent
@@ -314,14 +314,14 @@ def solve_stage_2(cube, progress, next_actions_list):
                     # Check if adjacent square does not match the adjacent
                     # face centre square.
                     else:
-                        print("NEXT - TOP ROW WHITE SQUARE NOT CORRECT, ROTATE TOP ROW")
+                        print("NEXT 2.04 - TOP ROW WHITE SQUARE NOT CORRECT, ROTATE TOP ROW")
                         # Rotate top row of cube.
                         cube = move_uc(cube)
                         # Add move to list.
                         next_actions_list.append("U")
             # If no white squares found in top row, break loop.
             if squares_found is False:
-                print("NEXT - NO WHITE SQUARES REMAIN/FOUND IN TOP ROW")
+                print("NEXT 2.05 - NO WHITE SQUARES REMAIN/FOUND IN TOP ROW")
                 break
         # There are now no white squares in the top row.
 
@@ -943,33 +943,35 @@ def solve_stage_7(cube, progress, next_actions_list):
 # the equivalent single move in the opposite direction (i.e. if the
 # list contained "U", "U", "U" this would be replaced with "U'") to
 # reduce the number of moves to be made by the user.
-def improve_efficiency(next_actions_list):
-    # Improve efficiency of moves in next_actions_list. Repeat until
+def improve_efficiency(moves_list):
+    # Improve efficiency of moves in moves_list. Repeat until
     # no inefficiencies are found.
     inefficiencies = True
     while inefficiencies is True:
         print("SOLVE - start loop to remove inefficiencies.")
+        print(f'Moves List:{str(moves_list)}')
         # Set to False to end the loop if no inefficiencies are found.
         inefficiencies = False
         
         # Find triple moves and replace them with one opposite move.
-        list_length = len(next_actions_list)
+        list_length = len(moves_list)
         index = 0
         while index < (list_length - 3):
             # Check each move in the list to see if it matches the
             # following two moves.
-            move_0 = next_actions_list[index]
-            move_1 = next_actions_list[index + 1]
-            move_2 = next_actions_list[index + 2]
+            move_0 = moves_list[index]
+            move_1 = moves_list[index + 1]
+            move_2 = moves_list[index + 2]
             if ((move_0 == move_1) and (move_0 == move_2)):
                 print("SOLVE - TRIPLE MOVES FOUND & REPLACED: " + move_0)
                 # If triple is found, replace the first move with the
                 # move from the replacement list.
-                move_0 = config.move_to_replace_triples[move_0]
+                print("TO BE REPLACED WITH: " + config.move_to_replace_triples[move_0])
+                moves_list[index] = config.move_to_replace_triples[move_0]
                 # Then remove the following move.
-                next_actions_list.pop(index + 1)
+                moves_list.pop(index + 1)
                 # Then remove the third move (which is not the second).
-                next_actions_list.pop(index + 1)
+                moves_list.pop(index + 1)
                 # Reduce list length to account for removeal of moves.
                 list_length = list_length - 2
                 # Record that triples were found to continue to loop
@@ -979,18 +981,18 @@ def improve_efficiency(next_actions_list):
             index = index + 1
 
         # Remove opposite moves directly one after the other.
-        list_length = len(next_actions_list)
+        list_length = len(moves_list)
         index = 0
         while index < (list_length - 2):
             # Check each move in the list to see if they are opposites
             # of each other and delete them both if so.
-            move_0 = next_actions_list[index]
-            move_1 = next_actions_list[index + 1]
+            move_0 = moves_list[index]
+            move_1 = moves_list[index + 1]
             if move_0 == config.opposite_moves[move_1]:
                 print("SOLVE - OPPOSITE MOVES FOUND & REMOVED")
                 # If opposite moves are found, remove both.
-                next_actions_list.pop(index)
-                next_actions_list.pop(index)
+                moves_list.pop(index)
+                moves_list.pop(index)
                 # Reduce list length to account for removeal of moves.
                 list_length = list_length - 2
                 # Record that triples were found to continue to loop
@@ -1002,7 +1004,7 @@ def improve_efficiency(next_actions_list):
     # Inefficiencies have now been removed.
     print("SOLVE - NEXT ACTIONS LIST UPDATED.")
     # Return improved list of actions.
-    return next_actions_list
+    return moves_list
 
 
 # INDIVIDUAL CUBE MOVES BELOW
