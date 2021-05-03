@@ -5,15 +5,9 @@ import random # Used to generate random numbers.
 
 # Select random cube move and make that move to the input cube.
 def random_move(cube):
-    # List of functions of each possible move.
-    move_functions = [
-        move_rc(cube), move_ra(cube), move_lc(cube),
-        move_la(cube), move_uc(cube), move_ua(cube),
-        move_fc(cube), move_fa(cube), move_bc(cube),
-        move_ba(cube), move_dc(cube), move_da(cube)
-    ]
-    # Randomly select a move function.
-    cube = random.choice(move_functions)
+    # Randomly select and make a move function.
+    random_move = random.choice(config.possible_moves)
+    cube = move(random_move, cube)
     # Return cube state after move is made.
     return cube
 
@@ -65,15 +59,6 @@ def solve_progress(cube):
     return solve_progress
 
 
-# Function to convert cube notation from a string into moves on a cube.
-def notation_conversion(cube, notation):
-    # Lookup the Cube Notation of move to be made, and return a string
-    # of required move function.
-    move_to_make = config.convert_notation_to_move[notation]
-    # Return required fuction, with function as string.
-    return eval(move_to_make)
-
-
 # Determine what moves are required to progress solving the cube.
 def next_action():
     print("NEXT - START NEXT_ACTION FUNCTION")
@@ -88,7 +73,22 @@ def next_action():
     function_as_string = f'solve_stage_{progress}(cube, progress, next_actions_list)'
     next_actions_list = eval(function_as_string)
     return next_actions_list
-        
+
+
+# Define changes to the squares of the cube when a move is made.
+def move(move, cube):
+    # Create blank dictionary
+    new_cube_colours = {}
+    # Iterate through to ONLY copy over squares, not ID etc.
+    for square in config.squares:
+        new_cube_colours[square] = cube[square]
+    # Change squares that need to be changed.
+    for square in config.move_definitions[move]:
+        new_cube_colours[square[0]] = cube[square[1]]
+    print(f"MOVE - make move {move}")
+    # Return amended dictionary of cube colours.
+    return new_cube_colours
+
 
 # Determine moves required to solve Stage 0, the daisy stage.
 # Append moves required to a list as moves are determined.
@@ -107,8 +107,7 @@ def solve_stage_0(cube, progress, next_actions_list):
                 while cube[top_square] == "white":
                     # Rotate top face to avoid existing white square
                     # on top face.
-                    cube = move_uc(cube)
-                    print("NEXT - MAKE MOVE U")
+                    cube = move('U', cube)
                     next_actions_list.append("U")
                 # If corresponding square on top face is not white,
                 # move white square from bottom face to top face.
@@ -117,9 +116,8 @@ def solve_stage_0(cube, progress, next_actions_list):
                     for action in moves:
                         # Append required moves to the list.
                         next_actions_list.append(action)
-                        print("NEXT - MAKE MOVE " + str(moves))
                         # Make required moves to cube.
-                        cube = notation_conversion(cube, action)
+                        cube = move(action, cube)
         # Now there should be no white squares on the bottom face.
         print("NEXT - NO WHITE SQUARES ON BOTTOM FACE")
 
@@ -133,18 +131,16 @@ def solve_stage_0(cube, progress, next_actions_list):
                 top_square = config.daisy_middle_reference_top_square[square]
                 while cube[top_square] == 'white':
                     # Rotate top face to find alternative.
-                    cube = move_uc(cube)
-                    print("NEXT - MAKE MOVE U")
+                    cube = move('U', cube)
                     next_actions_list.append("U")
                 # If relevant square on top face is not white, then
                 # add appropriate move to queue.
                 if cube[top_square] != 'white':
-                    move = config.daisy_middle_moves[square]
-                    next_actions_list.append(move)
-                    print("NEXT - MAKE MOVE " + move)
+                    action = config.daisy_middle_moves[square]
+                    next_actions_list.append(action)
                     # Convert Cube Notation into actual move_xx to
                     # action on next_cube_colours.
-                    cube = notation_conversion(cube, move)
+                    cube = move(action, cube)
         print("NEXT - NO WHITE SQUARES FOUND IN MIDDLE ROW")
         # Now there should be no white edge pieces in the middle row.
 
@@ -159,19 +155,19 @@ def solve_stage_0(cube, progress, next_actions_list):
                 while cube[top_square] == 'white':
                     # If appropriate top face square is white,
                     # rotate top face to find alternative.
-                    cube = move_uc(cube)
+                    cube = move('U', cube)
                     print("NEXT - MAKE MOVE U")
                     next_actions_list.append("U")
                 # If appropritate top face square is not white, make
                 # moves to bring square from bottom row to top face.
                 if cube[top_square] != 'white':
                     moves = config.daisy_bottom_moves[square]
+                    print("NEXT - make moves " + str(moves))
                     for action in moves:
                         # Append required moves to the list.
                         next_actions_list.append(action)
-                        print("NEXT - MAKE MOVE " + str(moves))
                         # Make required moves to cube.
-                        cube = notation_conversion(cube, action)
+                        cube = move(action, cube)
         # Now there should be no white squares in the bottom row.
         print("NEXT - NO WHITE SQUARES FOUND IN BOTTOM ROW")
 
@@ -184,11 +180,12 @@ def solve_stage_0(cube, progress, next_actions_list):
                 # For each white square in top row,
                 # move it onto the top face.
                 moves = config.daisy_top_moves[square]
+                print("NEXT - make moves " + str(moves))
                 for action in moves:
                     # Append required moves to the list.
                     next_actions_list.append(action)
                     # Make required moves to cube.
-                    cube = notation_conversion(cube, action)
+                    cube = move(action, cube)
         # Now there should be no white squares in the top row.
         print("NEXT - NO WHITE SQUARES FOUND IN TOP ROW")
         
@@ -205,7 +202,7 @@ def solve_stage_0(cube, progress, next_actions_list):
     return next_actions_list
 
 
-# Determine moves required to solve Stage 1, the Wwhite Cross stage.
+# Determine moves required to solve Stage 1, the White Cross stage.
 def solve_stage_1(cube, progress, next_actions_list):
     while progress == 1:
         print("NEXT 1.00,  white cross - PROGRESS FOUND TO BE 1.")
@@ -217,52 +214,56 @@ def solve_stage_1(cube, progress, next_actions_list):
         # Resolve front face.
         while cube['ftm'] != cube['fmm'] or cube['ubm'] != 'white':
             # Rotate top face of cube.
-            cube = move_uc(cube)
+            cube = move('U', cube)
             # Append required move to the list.
             next_actions_list.append('U')
         # Correctly aligned, so move top face square to bottom face.
         else:
             # Rotate front face twice.
-            cube = move_fc(move_fc(cube))
+            cube = move('F', cube)
+            cube = move('F', cube)
             # Append moves to the list.
             next_actions_list.append('F')
             next_actions_list.append('F')
         # Resolve left face.
         while cube['ltm'] != cube['lmm'] or cube['uml'] != 'white':
             # Rotate top face of cube.
-            cube = move_uc(cube)
+            cube = move('U', cube)
             # Append required move to the list.
             next_actions_list.append('U')
         # Correctly aligned, so move top face square to bottom face.
         else:
             # Rotate left face twice.
-            cube = move_lc(move_lc(cube))
+            cube = move('L', cube)
+            cube = move('L', cube)
             # Append moves to the list.
             next_actions_list.append('L')
             next_actions_list.append('L')
         # Resolve back face.
         while cube['btm'] != cube['bmm'] or cube['utm'] != 'white':
             # Rotate front face twice.
-            cube = move_uc(cube)
+            cube = move('U', cube)
             # Append required move to the list.
             next_actions_list.append('U')
         # Correctly aligned, so move top face square to bottom face.
         else:
             # Rotate back face twice.
-            cube = move_bc(move_bc(cube))
+            cube = move('B', cube)
+            cube = move('B', cube)
             # Append moves to the list.
             next_actions_list.append('B')
             next_actions_list.append('B')
         # Resolve right face.
         while cube['rtm'] != cube['rmm'] or cube['umr'] != 'white':
             # Rotate front face twice.
-            cube = move_uc(cube)
+            cube = move('U', cube)
             # Append required move to the list.
             next_actions_list.append('U')
         # Correctly aligned, so move top face square to bottom face.
         else:
             # Rotate right face twice.
-            cube = move_rc(move_rc(cube))
+            cube = move('R', cube)
+            cube = move('R', cube)
             # Append moves to the list.
             next_actions_list.append('R')
             next_actions_list.append('R')
@@ -310,13 +311,13 @@ def solve_stage_2(cube, progress, next_actions_list):
                             # Append move to list.
                             next_actions_list.append(action)
                             # Make moves to cube.
-                            cube = notation_conversion(cube, action)
+                            cube = move(action, cube)
                     # Check if adjacent square does not match the adjacent
                     # face centre square.
                     else:
                         print("NEXT 2.04 - TOP ROW WHITE SQUARE NOT CORRECT, ROTATE TOP ROW")
                         # Rotate top row of cube.
-                        cube = move_uc(cube)
+                        cube = move('U', cube)
                         # Add move to list.
                         next_actions_list.append("U")
             # If no white squares found in top row, break loop.
@@ -339,7 +340,7 @@ def solve_stage_2(cube, progress, next_actions_list):
                     # Append move to list.
                     next_actions_list.append(action)
                     # Make moves to cube.
-                    cube = notation_conversion(cube, action)
+                    cube = move(action, cube)
                 # If a square has been found, stop looking so this
                 # square can be correctly resolved.
                 break
@@ -358,11 +359,11 @@ def solve_stage_2(cube, progress, next_actions_list):
         if (cube['dtl'] == 'white' and (cube['fbl'] != 'blue' or cube['lbr'] != 'orange')):
             # If found to be incorrect, make moves to bring incorrect
             # cubelette into top row and append moves to list.
-            cube = move_la(cube)
+            cube = move("L'", cube)
             next_actions_list.append("L'")
-            cube = move_ua(cube)
+            cube = move("U'", cube)
             next_actions_list.append("U'")
-            cube = move_lc(cube)
+            cube = move("L", cube)
             next_actions_list.append("L")
             print("NEXT - SQUARE dtl MOVED, LOOPING BACK")
             # Loop back to resolve moved squares accordingly.
@@ -371,11 +372,11 @@ def solve_stage_2(cube, progress, next_actions_list):
         if (cube['dtr'] == 'white' and (cube['fbr'] != 'blue' or cube['rbl'] != 'red')):
             # If found to be incorrect, make moves to bring incorrect
             # cubelette into top row and append moves to list.
-            cube = move_rc(cube)
+            cube = move("R", cube)
             next_actions_list.append("R")
-            cube = move_uc(cube)
+            cube = move("U", cube)
             next_actions_list.append("U")
-            cube = move_ra(cube)
+            cube = move("R'", cube)
             next_actions_list.append("R'")
             print("NEXT - SQUARE dtr MOVED, LOOPING BACK")
             # Loop back to resolve moved squares accordingly.
@@ -384,11 +385,11 @@ def solve_stage_2(cube, progress, next_actions_list):
         if (cube['dbr'] == 'white' and (cube['bbl'] != 'green' or cube['rbr'] != 'red')):
             # If found to be incorrect, make moves to bring incorrect
             # cubelette into top row and append moves to list.
-            cube = move_ra(cube)
+            cube = move("R'", cube)
             next_actions_list.append("R'")
-            cube = move_ua(cube)
+            cube = move("U'", cube)
             next_actions_list.append("U'")
-            cube = move_rc(cube)
+            cube = move("R", cube)
             next_actions_list.append("R")
             print("NEXT - SQUARE dbr MOVED, LOOPING BACK")
             # Loop back to resolve moved squares accordingly.
@@ -397,11 +398,11 @@ def solve_stage_2(cube, progress, next_actions_list):
         if (cube['dbl'] == 'white' and (cube['fbl'] != 'blue' or cube['lbr'] != 'orange')):
             # If found to be incorrect, make moves to bring incorrect
             # cubelette into top row and append moves to list.
-            cube = move_lc(cube)
+            cube = move("L", cube)
             next_actions_list.append("L")
-            cube = move_uc(cube)
+            cube = move("U", cube)
             next_actions_list.append("U")
-            cube = move_la(cube)
+            cube = move("L'", cube)
             next_actions_list.append("L'")
             print("NEXT - SQUARE dbl MOVED, LOOPING BACK")
             # Loop back to resolve moved squares accordingly.
@@ -422,7 +423,7 @@ def solve_stage_2(cube, progress, next_actions_list):
                 # is not above a white square.
                 if cube[config.top_face_corner_squares[square]] == 'white':
                     # Make moves to cube.
-                    cube = move_uc(cube)
+                    cube = move('U', cube)
                     # Append move to list.
                     next_actions_list.append("U")
                     print("NEXT - TOP FACE ROTATED")
@@ -434,7 +435,7 @@ def solve_stage_2(cube, progress, next_actions_list):
                         # Append moves to list.
                         next_actions_list.append(action)
                         # Make moves to cube.
-                        cube = notation_conversion(cube, action)
+                        cube = move(action, cube)
                 # If a square has been found, loop back to start to correctly
                 # resolve that square before proceeding further.
                 print("NEXT - LOOPING BACK AFTER TOP FACE SQUARE MOVED")
@@ -502,7 +503,7 @@ def solve_stage_3(cube, progress, next_actions_list):
                         # so rotate top row.
                         print("NEXT 3.03, middle row - middle square " + cube[centre_square] + " does not match top square " + cube[square] + ", so rotate.")
                         # Make required moves to cube.
-                        cube = move_uc(cube)
+                        cube = move("U", cube)
                         # Append moves to list.
                         next_actions_list.append("U")
                         # Loop back around until face/square match.
@@ -539,7 +540,7 @@ def solve_stage_3(cube, progress, next_actions_list):
                             # Append appropriate trigger moves to list.
                             next_actions_list.append(action)
                             # Make required trigger moves to cube.
-                            cube = notation_conversion(cube, action)
+                            cube = move(action, cube)
                         print("NEXT 3.07, middle row - moves made to cube.")
             
             # If squares found above, loop round again to continue
@@ -574,7 +575,7 @@ def solve_stage_3(cube, progress, next_actions_list):
                     # Append moves to list.
                     next_actions_list.append(action)
                     # Make moves to cube.
-                    cube = notation_conversion(cube, action)
+                    cube = move(action, cube)
                 # Break loop to solve square that is now in top row.
                 break
         # If incorrect square found above, this will now be in the top
@@ -593,9 +594,9 @@ def solve_stage_3(cube, progress, next_actions_list):
 
 # Determine moves required to solve Stage 4, the Yellow Cross stage.
 def solve_stage_4(cube, progress, next_actions_list):
-    # Define collection of moves specific to this stage. The name
-    # of this collection of moves is memorised by a human as "fururf".
-    fururf = ("F", "U", "R", "U'", "R'", "F'")
+    # The specific collection of moves specific to this stage is
+    # memorised colloquially by a human as "fururf".
+
     # Moves required to be made depend on the number of yellow edge
     # squares already on the top face and their arrangement compared
     # to each other. 
@@ -612,11 +613,11 @@ def solve_stage_4(cube, progress, next_actions_list):
         # If there are either zero or one yellow edge piece on the top
         # face, then do the FURURF algorithm anyway.
         if squares_found < 2:
-            for action in fururf:
+            for action in config.fururf:
                 # Append moves to list.
                 next_actions_list.append(action)
                 # Make moves to cube.
-                cube = notation_conversion(cube, action)
+                cube = move(action, cube)
         
         # If there are two yellow edge squares on opposite ends
         # (forming a line), arrange the top face so they are in
@@ -625,37 +626,37 @@ def solve_stage_4(cube, progress, next_actions_list):
             # Check orientation, then do fururf algorithm. 
             if (cube['utm'] == 'yellow' and cube['ubm'] == 'yellow'):
                 # Orientation is correct, do fururf algorithm.
-                for action in fururf:
+                for action in config.fururf:
                     # Append fururf moves to list.
                     next_actions_list.append(action)
                     # Make fururf moves to cube.
-                    cube = notation_conversion(cube, action)
+                    cube = move(action, cube)
             elif (cube['uml'] == 'yellow' and cube['umr'] == 'yellow'):
                 # Orientation is incorrect, rotate top face.
-                cube = move_uc(cube)
+                cube = move("U", cube)
                 # Append move to list.
                 next_actions_list.append("U")
                 # Orientation now corrected, do fururf algorithm.
-                for action in fururf:
+                for action in config.fururf:
                     # Append fururf moves to list.
                     next_actions_list.append(action)
                     # Make fururf moves to cube.
-                    cube = notation_conversion(cube, action)
+                    cube = move(action, cube)
             # If there are two yellow edge squares in an L-shape:
             else:
                 # Rotate top face until yellow edge squares are in the
                 # utm and uml positions, then do FURURF algorithm.
                 while ((cube['uml'] != 'yellow') or (cube['utm'] != 'yellow')):
                     # Orientation is incorrect, rotate top face.
-                    cube = move_uc(cube)
+                    cube = move("U", cube)
                     # Append move to list.
                     next_actions_list.append("U")
                 # Orientation is correct.
-                for action in fururf:
+                for action in config.fururf:
                     # Append fururf moves to list.
                     next_actions_list.append(action)
                     # Make fururf moves to cube.
-                    cube = notation_conversion(cube, action)
+                    cube = move(action, cube)
 
         # If there are three yellow edge squares on top, rotate top
         # face so the only non-yellow edge square is in umr position,
@@ -664,15 +665,15 @@ def solve_stage_4(cube, progress, next_actions_list):
             # Rotate top face until orientation is correct.
             while ((cube['uml'] != 'yellow') or (cube['utm'] != 'yellow') or (cube['ubm'] != 'yellow')):
                 # Make move to cube.
-                cube = move_uc(cube)
+                cube = move("U", cube)
                 # Append move to list.
                 next_actions_list.append("U")
             # When orientation is correct, then do FURURF algorithm.
-            for action in fururf:
+            for action in config.fururf:
                 # Append fururf moves to list.
                 next_actions_list.append(action)
                 # Make fururf moves to cube.
-                cube = notation_conversion(cube, action)
+                cube = move(action, cube)
         
         # Check to see if the above has solved this stage to
         # either end loop or continue to loop until solved.
@@ -688,13 +689,11 @@ def solve_stage_4(cube, progress, next_actions_list):
 
 # Determine moves required to solve Stage 5, the Yellow Face stage.
 def solve_stage_5(cube, progress, next_actions_list):
+    # The specific collection of moves specific to this stage is
+    # memorised colloquially by a human as "rururuur".
     # Depending on the number of yellow corner squares on the top face
     # and their orientation, different preperation is required before
-    # making the RURURUUR algorithm.    
-    
-    # List of moves required repeatedly in this stage:
-    rururuur = ("R", "U", "R'", "U", "R", "U", "U", "R'")
-
+    # making the rururuur algorithm.    
     while progress == 5:
         print("NEXT 5.00, yellow face - progress found to be 5")
         # Count yellow corner squares on top face.
@@ -712,15 +711,15 @@ def solve_stage_5(cube, progress, next_actions_list):
             # Rotate top face until ubl square is yellow.
             while cube['ubl'] != 'yellow':
                 # Rotate top face of cube.
-                cube = move_uc(cube)
+                cube = move("U", cube)
                 # Append moves to list.
                 next_actions_list.append("U")
             # Then do rururuur algorithm.
-            for action in rururuur:
+            for action in config.rururuur:
                 # Append rururuur moves to list.
                 next_actions_list.append(action)
                 # Make rururuur moves to cube.
-                cube = notation_conversion(cube, action)
+                cube = move(action, cube)
 
         # If zero or >1 top face corner squares are yellow then rotate
         # top face until ltr is yellow, then do RURURUUR algorithm.
@@ -728,15 +727,15 @@ def solve_stage_5(cube, progress, next_actions_list):
             # Rotate top face until ltr square is yellow.
             while cube['ltr'] != 'yellow':
                 # Rotate top face of cube.
-                cube = move_uc(cube)
+                cube = move("U", cube)
                 # Append move to list.
                 next_actions_list.append("U")
             # Then do RURURUUR algorithm.
-            for action in rururuur:
+            for action in config.rururuur:
                 # Append rururuur moves to list.
                 next_actions_list.append(action)
                 # Make rururuur moves to cube.
-                cube = notation_conversion(cube, action)
+                cube = move(action, cube)
         
         # Check to see if the above has solved this stage to either
         # end loop or continue to loop until solved.
@@ -810,7 +809,7 @@ def solve_stage_6(cube, progress, next_actions_list):
                 # Make moves clockwise
                 for i in range(rotations):
                     # Make move to cube.
-                    cube = move_uc(cube)
+                    cube = move("U", cube)
                     # Append move to list.
                     next_actions_list.append("U")
             else:
@@ -818,7 +817,7 @@ def solve_stage_6(cube, progress, next_actions_list):
                 rotations = rotations * -1
                 for i in range(rotations):
                     # Make move to cube.
-                    cube = move_ua(cube)
+                    cube = move("U'", cube)
                     # Append move to list.
                     next_actions_list.append("U'")
             # Then perform algorithm to begin to solve all corners.
@@ -826,7 +825,7 @@ def solve_stage_6(cube, progress, next_actions_list):
                 # Append required corner solve moves to list.
                 next_actions_list.append(action)
                 # Make corner solve moves to cube.
-                cube = notation_conversion(cube, action)
+                cube = move(action, cube)
 
         # If there are no matching corners, perform algorithm as if
         # left face was matching.
@@ -835,7 +834,7 @@ def solve_stage_6(cube, progress, next_actions_list):
                 # Append moves to list.
                 next_actions_list.append(action)
                 # Make moves to cube.
-                cube = notation_conversion(cube, action)
+                cube = move(action, cube)
         
         # Check to see if the above has solved this stage to
         # either end loop or continue to loop until solved.
@@ -892,7 +891,7 @@ def solve_stage_7(cube, progress, next_actions_list):
                 # Add anti-clockwise moves to list.
                 next_actions_list.append(action)
                 # Make anti-clockwise moves to cube.
-                cube = notation_conversion(cube, action)
+                cube = move(action, cube)
         # If a face is solved, check if top row needs moving clockwise
         # or anti-clockwise, then make appropriate moves.
         if face_solved is True:
@@ -923,7 +922,7 @@ def solve_stage_7(cube, progress, next_actions_list):
                 # Append moves to list.
                 next_actions_list.append(action)
                 # Make moves to cube.
-                cube = notation_conversion(cube, action)
+                cube = move(action, cube)
         
         # Check to see if the above has solved this stage to either
         # end loop or continue to loop until solved.
@@ -949,7 +948,7 @@ def improve_efficiency(moves_list):
     inefficiencies = True
     while inefficiencies is True:
         print("SOLVE - start loop to remove inefficiencies.")
-        print(f'Moves List:{str(moves_list)}')
+        print(f'Starting List:{str(moves_list)}')
         # Set to False to end the loop if no inefficiencies are found.
         inefficiencies = False
         
@@ -1002,421 +1001,7 @@ def improve_efficiency(moves_list):
             index = index + 1
         # Continue to loop around until no ineffiencies are been found.
     # Inefficiencies have now been removed.
+    print(f'Resulting List:{str(moves_list)}')
     print("SOLVE - NEXT ACTIONS LIST UPDATED.")
     # Return improved list of actions.
     return moves_list
-
-
-# INDIVIDUAL CUBE MOVES BELOW
-
-# R (clockwise)
-def move_rc(cube):
-    # Create blank dictionary
-    new_cube_colours = {}
-    # Iterate through to ONLY copy over squares, not ID etc.
-    for square in config.squares:
-        new_cube_colours[square] = cube[square]
-    # Change squares that need to be changed.
-    new_cube_colours['rtr'] = cube['rtl']
-    new_cube_colours['rmr'] = cube['rtm']
-    new_cube_colours['rbr'] = cube['rtr']
-    new_cube_colours['rtm'] = cube['rml']
-    new_cube_colours['rbm'] = cube['rmr']
-    new_cube_colours['rtl'] = cube['rbl']
-    new_cube_colours['rml'] = cube['rbm']
-    new_cube_colours['rbl'] = cube['rbr']
-    new_cube_colours['utr'] = cube['ftr']
-    new_cube_colours['umr'] = cube['fmr']
-    new_cube_colours['ubr'] = cube['fbr']
-    new_cube_colours['bbl'] = cube['utr']
-    new_cube_colours['bml'] = cube['umr']
-    new_cube_colours['btl'] = cube['ubr']
-    new_cube_colours['ftr'] = cube['dtr']
-    new_cube_colours['fmr'] = cube['dmr']
-    new_cube_colours['fbr'] = cube['dbr']
-    new_cube_colours['dbr'] = cube['btl']
-    new_cube_colours['dmr'] = cube['bml']
-    new_cube_colours['dtr'] = cube['bbl']
-    # Return amended dictionary of cube colours.
-    return new_cube_colours
-
-
-# R' (anti-clockwise)
-def move_ra(cube):
-    # Create blank dictionary
-    new_cube_colours = {}
-    # Iterate through to ONLY copy over squares, not ID etc.
-    for square in config.squares:
-        new_cube_colours[square] = cube[square]
-    # Change squares that need to be changed.
-    new_cube_colours['rtl'] = cube['rtr']
-    new_cube_colours['rtm'] = cube['rmr']
-    new_cube_colours['rtr'] = cube['rbr']
-    new_cube_colours['rml'] = cube['rtm']
-    new_cube_colours['rmr'] = cube['rbm']
-    new_cube_colours['rbl'] = cube['rtl']
-    new_cube_colours['rbm'] = cube['rml']
-    new_cube_colours['rbr'] = cube['rbl']
-    new_cube_colours['ftr'] = cube['utr']
-    new_cube_colours['fmr'] = cube['umr']
-    new_cube_colours['fbr'] = cube['ubr']
-    new_cube_colours['utr'] = cube['bbl']
-    new_cube_colours['umr'] = cube['bml']
-    new_cube_colours['ubr'] = cube['btl']
-    new_cube_colours['dtr'] = cube['ftr']
-    new_cube_colours['dmr'] = cube['fmr']
-    new_cube_colours['dbr'] = cube['fbr']
-    new_cube_colours['btl'] = cube['dbr']
-    new_cube_colours['bml'] = cube['dmr']
-    new_cube_colours['bbl'] = cube['dtr']
-    # Return amended dictionary of cube colours.
-    return new_cube_colours
-
-
-# L (clockwise)
-def move_lc(cube):
-    # Create blank dictionary
-    new_cube_colours = {}
-    # Iterate through to ONLY copy over squares, not ID etc.
-    for square in config.squares:
-        new_cube_colours[square] = cube[square]
-    # Change squares that need to be changed.
-    new_cube_colours['ltr'] = cube['ltl']
-    new_cube_colours['lmr'] = cube['ltm']
-    new_cube_colours['lbr'] = cube['ltr']
-    new_cube_colours['ltm'] = cube['lml']
-    new_cube_colours['lbm'] = cube['lmr']
-    new_cube_colours['ltl'] = cube['lbl']
-    new_cube_colours['lml'] = cube['lbm']
-    new_cube_colours['lbl'] = cube['lbr']
-    new_cube_colours['dtl'] = cube['ftl']
-    new_cube_colours['dml'] = cube['fml']
-    new_cube_colours['dbl'] = cube['fbl']
-    new_cube_colours['ftl'] = cube['utl']
-    new_cube_colours['fml'] = cube['uml']
-    new_cube_colours['fbl'] = cube['ubl']
-    new_cube_colours['bbr'] = cube['dtl']
-    new_cube_colours['bmr'] = cube['dml']
-    new_cube_colours['btr'] = cube['dbl']
-    new_cube_colours['ubl'] = cube['btr']
-    new_cube_colours['uml'] = cube['bmr']
-    new_cube_colours['utl'] = cube['bbr']
-    # Return amended dictionary of cube colours.
-    return new_cube_colours
-
-
-# L' (anti-clockwise)
-def move_la(cube):
-    # Create blank dictionary
-    new_cube_colours = {}
-    # Iterate through to ONLY copy over squares, not ID etc.
-    for square in config.squares:
-        new_cube_colours[square] = cube[square]
-    # Change squares that need to be changed.
-    new_cube_colours['ltl'] = cube['ltr']
-    new_cube_colours['ltm'] = cube['lmr']
-    new_cube_colours['ltr'] = cube['lbr']
-    new_cube_colours['lml'] = cube['ltm']
-    new_cube_colours['lmr'] = cube['lbm']
-    new_cube_colours['lbl'] = cube['ltl']
-    new_cube_colours['lbm'] = cube['lml']
-    new_cube_colours['lbr'] = cube['lbl']
-    new_cube_colours['ftl'] = cube['dtl']
-    new_cube_colours['fml'] = cube['dml']
-    new_cube_colours['fbl'] = cube['dbl']
-    new_cube_colours['utl'] = cube['ftl']
-    new_cube_colours['uml'] = cube['fml']
-    new_cube_colours['ubl'] = cube['fbl']
-    new_cube_colours['dtl'] = cube['bbr']
-    new_cube_colours['dml'] = cube['bmr']
-    new_cube_colours['dbl'] = cube['btr']
-    new_cube_colours['btr'] = cube['ubl']
-    new_cube_colours['bmr'] = cube['uml']
-    new_cube_colours['bbr'] = cube['utl']
-    # Return amended dictionary of cube colours.
-    return new_cube_colours
-
-
-# U (clockwise)
-def move_uc(cube):
-    # Create blank dictionary
-    new_cube_colours = {}
-    # Iterate through to ONLY copy over squares, not ID etc.
-    for square in config.squares:
-        new_cube_colours[square] = cube[square]
-    # Change squares that need to be changed.
-    new_cube_colours['utr'] = cube['utl']
-    new_cube_colours['umr'] = cube['utm']
-    new_cube_colours['ubr'] = cube['utr']
-    new_cube_colours['utm'] = cube['uml']
-    new_cube_colours['ubm'] = cube['umr']
-    new_cube_colours['utl'] = cube['ubl']
-    new_cube_colours['uml'] = cube['ubm']
-    new_cube_colours['ubl'] = cube['ubr']
-    new_cube_colours['btl'] = cube['ltl']
-    new_cube_colours['btm'] = cube['ltm']
-    new_cube_colours['btr'] = cube['ltr']
-    new_cube_colours['rtr'] = cube['btr']
-    new_cube_colours['rtm'] = cube['btm']
-    new_cube_colours['rtl'] = cube['btl']
-    new_cube_colours['ftr'] = cube['rtr']
-    new_cube_colours['ftm'] = cube['rtm']
-    new_cube_colours['ftl'] = cube['rtl']
-    new_cube_colours['ltl'] = cube['ftl']
-    new_cube_colours['ltm'] = cube['ftm']
-    new_cube_colours['ltr'] = cube['ftr']
-    # Return amended dictionary of cube colours.
-    return new_cube_colours
-
-
-# U' (anti-clockwise)
-def move_ua(cube):
-    # Create blank dictionary
-    new_cube_colours = {}
-    # Iterate through to ONLY copy over squares, not ID etc.
-    for square in config.squares:
-        new_cube_colours[square] = cube[square]
-    # Change squares that need to be changed.
-    new_cube_colours['utl'] = cube['utr']
-    new_cube_colours['utm'] = cube['umr']
-    new_cube_colours['utr'] = cube['ubr']
-    new_cube_colours['uml'] = cube['utm']
-    new_cube_colours['umr'] = cube['ubm']
-    new_cube_colours['ubl'] = cube['utl']
-    new_cube_colours['ubm'] = cube['uml']
-    new_cube_colours['ubr'] = cube['ubl']
-    new_cube_colours['ltl'] = cube['btl']
-    new_cube_colours['ltm'] = cube['btm']
-    new_cube_colours['ltr'] = cube['btr']
-    new_cube_colours['btr'] = cube['rtr']
-    new_cube_colours['btm'] = cube['rtm']
-    new_cube_colours['btl'] = cube['rtl']
-    new_cube_colours['rtr'] = cube['ftr']
-    new_cube_colours['rtm'] = cube['ftm']
-    new_cube_colours['rtl'] = cube['ftl']
-    new_cube_colours['ftl'] = cube['ltl']
-    new_cube_colours['ftm'] = cube['ltm']
-    new_cube_colours['ftr'] = cube['ltr']
-    # Return amended dictionary of cube colours.
-    return new_cube_colours
-
-
-# F' (anti-clockwise)
-def move_fa(cube):
-    # Create blank dictionary
-    new_cube_colours = {}
-    # Iterate through to ONLY copy over squares, not ID etc.
-    for square in config.squares:
-        new_cube_colours[square] = cube[square]
-    # Change squares that need to be changed.
-    new_cube_colours['ftl'] = cube['ftr']
-    new_cube_colours['ftm'] = cube['fmr']
-    new_cube_colours['ftr'] = cube['fbr']
-    new_cube_colours['fml'] = cube['ftm']
-    new_cube_colours['fmr'] = cube['fbm']
-    new_cube_colours['fbl'] = cube['ftl']
-    new_cube_colours['fbm'] = cube['fml']
-    new_cube_colours['fbr'] = cube['fbl']
-    new_cube_colours['ltr'] = cube['ubr']
-    new_cube_colours['lmr'] = cube['ubm']
-    new_cube_colours['lbr'] = cube['ubl']
-    new_cube_colours['ubl'] = cube['rtl']
-    new_cube_colours['ubm'] = cube['rml']
-    new_cube_colours['ubr'] = cube['rbl']
-    new_cube_colours['rtl'] = cube['dtr']
-    new_cube_colours['rml'] = cube['dtm']
-    new_cube_colours['rbl'] = cube['dtl']
-    new_cube_colours['dtl'] = cube['ltr']
-    new_cube_colours['dtm'] = cube['lmr']
-    new_cube_colours['dtr'] = cube['lbr']
-    # Return amended dictionary of cube colours.
-    return new_cube_colours
-
-
-# F (clockwise)
-def move_fc(cube):
-    # Create blank dictionary
-    new_cube_colours = {}
-    # Iterate through to ONLY copy over squares, not ID etc.
-    for square in config.squares:
-        new_cube_colours[square] = cube[square]
-    # Change squares that need to be changed.
-    new_cube_colours['ftr'] = cube['ftl']
-    new_cube_colours['fmr'] = cube['ftm']
-    new_cube_colours['fbr'] = cube['ftr']
-    new_cube_colours['ftm'] = cube['fml']
-    new_cube_colours['fbm'] = cube['fmr']
-    new_cube_colours['ftl'] = cube['fbl']
-    new_cube_colours['fml'] = cube['fbm']
-    new_cube_colours['fbl'] = cube['fbr']
-    new_cube_colours['ubr'] = cube['ltr']
-    new_cube_colours['ubm'] = cube['lmr']
-    new_cube_colours['ubl'] = cube['lbr']
-    new_cube_colours['rtl'] = cube['ubl']
-    new_cube_colours['rml'] = cube['ubm']
-    new_cube_colours['rbl'] = cube['ubr']
-    new_cube_colours['dtr'] = cube['rtl']
-    new_cube_colours['dtm'] = cube['rml']
-    new_cube_colours['dtl'] = cube['rbl']
-    new_cube_colours['ltr'] = cube['dtl']
-    new_cube_colours['lmr'] = cube['dtm']
-    new_cube_colours['lbr'] = cube['dtr']
-    # Return amended dictionary of cube colours.
-    return new_cube_colours
-
-
-# B (clockwise)
-def move_bc(cube):
-    # Create blank dictionary
-    new_cube_colours = {}
-    # Iterate through to ONLY copy over squares, not ID etc.
-    for square in config.squares:
-        new_cube_colours[square] = cube[square]
-    # Change squares that need to be changed.
-    new_cube_colours['bbr'] = cube['btr']
-    new_cube_colours['bmr'] = cube['btm']
-    new_cube_colours['btr'] = cube['btl']
-    new_cube_colours['bbm'] = cube['bmr']
-    new_cube_colours['btm'] = cube['bml']
-    new_cube_colours['bbl'] = cube['bbr']
-    new_cube_colours['bml'] = cube['bbm']
-    new_cube_colours['btl'] = cube['bbl']
-    new_cube_colours['lbl'] = cube['utl']
-    new_cube_colours['lml'] = cube['utm']
-    new_cube_colours['ltl'] = cube['utr']
-    new_cube_colours['dbl'] = cube['ltl']
-    new_cube_colours['dbm'] = cube['lml']
-    new_cube_colours['dbr'] = cube['lbl']
-    new_cube_colours['rbr'] = cube['dbl']
-    new_cube_colours['rmr'] = cube['dbm']
-    new_cube_colours['rtr'] = cube['dbr']
-    new_cube_colours['utl'] = cube['rtr']
-    new_cube_colours['utm'] = cube['rmr']
-    new_cube_colours['utr'] = cube['rbr']
-    # Return amended dictionary of cube colours.
-    return new_cube_colours
-
-
-# B' (anti-clockwise)
-def move_ba(cube):
-    # Create blank dictionary
-    new_cube_colours = {}
-    # Iterate through to ONLY copy over squares, not ID etc.
-    for square in config.squares:
-        new_cube_colours[square] = cube[square]
-    # Change squares that need to be changed.
-    new_cube_colours['btr'] = cube['bbr']
-    new_cube_colours['btm'] = cube['bmr']
-    new_cube_colours['btl'] = cube['btr']
-    new_cube_colours['bmr'] = cube['bbm']
-    new_cube_colours['bml'] = cube['btm']
-    new_cube_colours['bbr'] = cube['bbl']
-    new_cube_colours['bbm'] = cube['bml']
-    new_cube_colours['bbl'] = cube['btl']
-    new_cube_colours['utl'] = cube['lbl']
-    new_cube_colours['utm'] = cube['lml']
-    new_cube_colours['utr'] = cube['ltl']
-    new_cube_colours['ltl'] = cube['dbl']
-    new_cube_colours['lml'] = cube['dbm']
-    new_cube_colours['lbl'] = cube['dbr']
-    new_cube_colours['dbl'] = cube['rbr']
-    new_cube_colours['dbm'] = cube['rmr']
-    new_cube_colours['dbr'] = cube['rtr']
-    new_cube_colours['rtr'] = cube['utl']
-    new_cube_colours['rmr'] = cube['utm']
-    new_cube_colours['rbr'] = cube['utr']
-    # Return amended dictionary of cube colours.
-    return new_cube_colours
-
-
-# D (clockwise)
-def move_dc(cube):
-    # Create blank dictionary
-    new_cube_colours = {}
-    # Iterate through to ONLY copy over squares, not ID etc.
-    for square in config.squares:
-        new_cube_colours[square] = cube[square]
-    # Change squares that need to be changed.
-    new_cube_colours['dtr'] = cube['dtl']
-    new_cube_colours['dmr'] = cube['dtm']
-    new_cube_colours['dbr'] = cube['dtr']
-    new_cube_colours['dtm'] = cube['dml']
-    new_cube_colours['dbm'] = cube['dmr']
-    new_cube_colours['dtl'] = cube['dbl']
-    new_cube_colours['dml'] = cube['dbm']
-    new_cube_colours['dbl'] = cube['dbr']
-    new_cube_colours['rbl'] = cube['fbl']
-    new_cube_colours['rbm'] = cube['fbm']
-    new_cube_colours['rbr'] = cube['fbr']
-    new_cube_colours['bbl'] = cube['rbl']
-    new_cube_colours['bbm'] = cube['rbm']
-    new_cube_colours['bbr'] = cube['rbr']
-    new_cube_colours['lbr'] = cube['bbr']
-    new_cube_colours['lbm'] = cube['bbm']
-    new_cube_colours['lbl'] = cube['bbl']
-    new_cube_colours['fbl'] = cube['lbl']
-    new_cube_colours['fbm'] = cube['lbm']
-    new_cube_colours['fbr'] = cube['lbr']
-    # Return amended dictionary of cube colours.
-    return new_cube_colours
-
-
-# D' (anti-clockwise)
-def move_da(cube):
-    # Create blank dictionary
-    new_cube_colours = {}
-    # Iterate through to ONLY copy over squares, not ID etc.
-    for square in config.squares:
-        new_cube_colours[square] = cube[square]
-    # Change squares that need to be changed.
-    new_cube_colours['dtl'] = cube['dtr']
-    new_cube_colours['dtm'] = cube['dmr']
-    new_cube_colours['dtr'] = cube['dbr']
-    new_cube_colours['dml'] = cube['dtm']
-    new_cube_colours['dmr'] = cube['dbm']
-    new_cube_colours['dbl'] = cube['dtl']
-    new_cube_colours['dbm'] = cube['dml']
-    new_cube_colours['dbr'] = cube['dbl']
-    new_cube_colours['fbl'] = cube['rbl']
-    new_cube_colours['fbm'] = cube['rbm']
-    new_cube_colours['fbr'] = cube['rbr']
-    new_cube_colours['rbl'] = cube['bbl']
-    new_cube_colours['rbm'] = cube['bbm']
-    new_cube_colours['rbr'] = cube['bbr']
-    new_cube_colours['bbr'] = cube['lbr']
-    new_cube_colours['bbm'] = cube['lbm']
-    new_cube_colours['bbl'] = cube['lbl']
-    new_cube_colours['lbl'] = cube['fbl']
-    new_cube_colours['lbm'] = cube['fbm']
-    new_cube_colours['lbr'] = cube['fbr']
-    # Return amended dictionary of cube colours.
-    return new_cube_colours
-
-
-# CUBE MOVE FUNCTIONS BELOW
-
-# Right trigger
-def right_trigger(cube):
-    new_cube_colours = move_rc(cube)
-    new_cube_colours = move_uc(new_cube_colours)
-    new_cube_colours = move_ra(new_cube_colours)
-    return new_cube_colours
-
-
-# Left trigger
-def left_trigger(cube):
-    new_cube_colours = move_la(cube)
-    new_cube_colours = move_ua(new_cube_colours)
-    new_cube_colours = move_lc(new_cube_colours)
-    return new_cube_colours
-
-
-# FURU'R'F' algorithm
-def fururf(cube):
-    new_cube_colours = move_fc(cube)
-    new_cube_colours = move_uc(new_cube_colours)
-    new_cube_colours = move_rc(new_cube_colours)
-    new_cube_colours = move_ua(new_cube_colours)
-    new_cube_colours = move_ra(new_cube_colours)
-    new_cube_colours = move_fa(new_cube_colours)
-    return new_cube_colours

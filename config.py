@@ -174,20 +174,96 @@ possible_moves = [
     "B'", "D", "D'"
 ]
 
-# Conversion of Cube Notation to move function.
-convert_notation_to_move = {
-    "R": "move_rc(cube)",
-    "R'": "move_ra(cube)",
-    "L": "move_lc(cube)",
-    "L'": "move_la(cube)",
-    "U": "move_uc(cube)",
-    "U'": "move_ua(cube)",
-    "D": "move_dc(cube)",
-    "D'": "move_da(cube)",
-    "B": "move_bc(cube)",
-    "B'": "move_ba(cube)",
-    "F": "move_fc(cube)",
-    "F'": "move_fa(cube)"
+# MOVE DEFINITIONS:
+# Definition of changes to cube when a move is made.
+# The first item in the list is the new square position, the second
+# item in the list is the old square position.
+
+move_definitions = {
+    "R":(('rtr', 'rtl'), ('rmr', 'rtm'), ('rbr', 'rtr'),
+        ('rtm', 'rml'), ('rbm', 'rmr'), ('rtl', 'rbl'),
+        ('rml', 'rbm'), ('rbl', 'rbr'), ('utr', 'ftr'),
+        ('umr', 'fmr'), ('ubr', 'fbr'), ('bbl', 'utr'),
+        ('bml', 'umr'), ('btl', 'ubr'), ('ftr', 'dtr'),
+        ('fmr', 'dmr'), ('fbr', 'dbr'), ('dbr', 'btl'),
+        ('dmr', 'bml'), ('dtr', 'bbl')),
+    "R'":(('rtl', 'rtr'), ('rtm', 'rmr'), ('rtr', 'rbr'),
+        ('rml', 'rtm'), ('rmr', 'rbm'), ('rbl', 'rtl'),
+        ('rbm', 'rml'), ('rbr', 'rbl'), ('ftr', 'utr'),
+        ('fmr', 'umr'), ('fbr', 'ubr'), ('utr', 'bbl'),
+        ('umr', 'bml'), ('ubr', 'btl'), ('dtr', 'ftr'),
+        ('dmr', 'fmr'), ('dbr', 'fbr'), ('btl', 'dbr'),
+        ('bml', 'dmr'), ('bbl', 'dtr')),
+    "L":(('ltr', 'ltl'), ('lmr', 'ltm'), ('lbr', 'ltr'),
+        ('ltm', 'lml'), ('lbm', 'lmr'), ('ltl', 'lbl'),
+        ('lml', 'lbm'), ('lbl', 'lbr'), ('dtl', 'ftl'),
+        ('dml', 'fml'), ('dbl', 'fbl'), ('ftl', 'utl'),
+        ('fml', 'uml'), ('fbl', 'ubl'), ('bbr', 'dtl'),
+        ('bmr', 'dml'), ('btr', 'dbl'), ('ubl', 'btr'),
+        ('uml', 'bmr'), ('utl', 'bbr')),
+    "L'":(('ltl', 'ltr'), ('ltm', 'lmr'), ('ltr', 'lbr'),
+        ('lml', 'ltm'), ('lmr', 'lbm'), ('lbl', 'ltl'),
+        ('lbm', 'lml'), ('lbr', 'lbl'), ('ftl', 'dtl'),
+        ('fml', 'dml'), ('fbl', 'dbl'), ('utl', 'ftl'),
+        ('uml', 'fml'), ('ubl', 'fbl'), ('dtl', 'bbr'),
+        ('dml', 'bmr'), ('dbl', 'btr'), ('btr', 'ubl'),
+        ('bmr', 'uml'), ('bbr', 'utl')),
+    "U":(('utr', 'utl'), ('umr', 'utm'), ('ubr', 'utr'),
+        ('utm', 'uml'), ('ubm', 'umr'), ('utl', 'ubl'),
+        ('uml', 'ubm'), ('ubl', 'ubr'), ('btl', 'ltl'),
+        ('btm', 'ltm'), ('btr', 'ltr'), ('rtr', 'btr'),
+        ('rtm', 'btm'), ('rtl', 'btl'), ('ftr', 'rtr'),
+        ('ftm', 'rtm'), ('ftl', 'rtl'), ('ltl', 'ftl'),
+        ('ltm', 'ftm'), ('ltr', 'ftr')),
+    "U'":(('utl', 'utr'), ('utm', 'umr'), ('utr', 'ubr'),
+        ('uml', 'utm'), ('umr', 'ubm'), ('ubl', 'utl'),
+        ('ubm', 'uml'), ('ubr', 'ubl'), ('ltl', 'btl'),
+        ('ltm', 'btm'), ('ltr', 'btr'), ('btr', 'rtr'),
+        ('btm', 'rtm'), ('btl', 'rtl'), ('rtr', 'ftr'),
+        ('rtm', 'ftm'), ('rtl', 'ftl'), ('ftl', 'ltl'),
+        ('ftm', 'ltm'), ('ftr', 'ltr')),
+    "F":(('ftr', 'ftl'), ('fmr', 'ftm'), ('fbr', 'ftr'),
+        ('ftm', 'fml'), ('fbm', 'fmr'), ('ftl', 'fbl'),
+        ('fml', 'fbm'), ('fbl', 'fbr'), ('ubr', 'ltr'),
+        ('ubm', 'lmr'), ('ubl', 'lbr'), ('rtl', 'ubl'),
+        ('rml', 'ubm'), ('rbl', 'ubr'), ('dtr', 'rtl'),
+        ('dtm', 'rml'), ('dtl', 'rbl'), ('ltr', 'dtl'),
+        ('lmr', 'dtm'), ('lbr', 'dtr')),
+    "F'":(('ftl', 'ftr'), ('ftm', 'fmr'), ('ftr', 'fbr'),
+        ('fml', 'ftm'), ('fmr', 'fbm'), ('fbl', 'ftl'),
+        ('fbm', 'fml'), ('fbr', 'fbl'), ('ltr', 'ubr'),
+        ('lmr', 'ubm'), ('lbr', 'ubl'), ('ubl', 'rtl'),
+        ('ubm', 'rml'), ('ubr', 'rbl'), ('rtl', 'dtr'),
+        ('rml', 'dtm'), ('rbl', 'dtl'), ('dtl', 'ltr'),
+        ('dtm', 'lmr'), ('dtr', 'lbr')),
+    "B":(('bbr', 'btr'), ('bmr', 'btm'), ('btr', 'btl'),
+        ('bbm', 'bmr'), ('btm', 'bml'), ('bbl', 'bbr'),
+        ('bml', 'bbm'), ('btl', 'bbl'), ('lbl', 'utl'),
+        ('lml', 'utm'), ('ltl', 'utr'), ('dbl', 'ltl'),
+        ('dbm', 'lml'), ('dbr', 'lbl'), ('rbr', 'dbl'),
+        ('rmr', 'dbm'), ('rtr', 'dbr'), ('utl', 'rtr'),
+        ('utm', 'rmr'), ('utr', 'rbr')),
+    "B'":(('btr', 'bbr'), ('btm', 'bmr'), ('btl', 'btr'),
+        ('bmr', 'bbm'), ('bml', 'btm'), ('bbr', 'bbl'),
+        ('bbm', 'bml'), ('bbl', 'btl'), ('utl', 'lbl'),
+        ('utm', 'lml'), ('utr', 'ltl'), ('ltl', 'dbl'),
+        ('lml', 'dbm'), ('lbl', 'dbr'), ('dbl', 'rbr'),
+        ('dbm', 'rmr'), ('dbr', 'rtr'), ('rtr', 'utl'),
+        ('rmr', 'utm'), ('rbr', 'utr')),
+    "D":(('dtr', 'dtl'), ('dmr', 'dtm'), ('dbr', 'dtr'),
+        ('dtm', 'dml'), ('dbm', 'dmr'), ('dtl', 'dbl'),
+        ('dml', 'dbm'), ('dbl', 'dbr'), ('rbl', 'fbl'),
+        ('rbm', 'fbm'), ('rbr', 'fbr'), ('bbl', 'rbl'),
+        ('bbm', 'rbm'), ('bbr', 'rbr'), ('lbr', 'bbr'),
+        ('lbm', 'bbm'), ('lbl', 'bbl'), ('fbl', 'lbl'),
+        ('fbm', 'lbm'), ('fbr', 'lbr')),
+    "D'":(('dtl', 'dtr'), ('dtm', 'dmr'), ('dtr', 'dbr'),
+        ('dml', 'dtm'), ('dmr', 'dbm'), ('dbl', 'dtl'),
+        ('dbm', 'dml'), ('dbr', 'dbl'), ('fbl', 'rbl'),
+        ('fbm', 'rbm'), ('fbr', 'rbr'), ('rbl', 'bbl'),
+        ('rbm', 'bbm'), ('rbr', 'bbr'), ('bbr', 'lbr'),
+        ('bbm', 'lbm'), ('bbl', 'lbl'), ('lbl', 'fbl'),
+        ('lbm', 'fbm'), ('lbr', 'fbr'))
 }
 
 # Names of each stage.
@@ -287,6 +363,12 @@ centre_square_for_top_middle_square = {
 left_face_centre = {
     'ubm':'lmm', 'uml':'bmm', 'utm':'rmm', 'umr':'fmm'
 }
+
+# Solve Stage 4:
+fururf = ("F", "U", "R", "U'", "R'", "F'")
+
+# Solve Stage 5:
+rururuur = ("R", "U", "R'", "U", "R", "U", "U", "R'")
 
 # Solve Stage 6:
 top_row_squares = {
