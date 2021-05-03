@@ -5,6 +5,8 @@ This web app will allow a user to input their rubiks cube's arrangement and then
 
 This web app has been created as the final project for CS50.
 
+Github repository: https://github.com/samjcox/rubiks
+
 #### Environment:
 Python, HTML, JavaScript, Flask, Jinja, CSS, Bootstrap.
 
@@ -20,7 +22,7 @@ Python, HTML, JavaScript, Flask, Jinja, CSS, Bootstrap.
 ## Detailed features
 - Each user can store their own cubes in the database, with the ability to amend, copy and delete individual cubes from the database.
 - You can delete all cubes from the database with one function; this function does include a confirmation message displayed in an overlay.
-- There is a Loading overlay that appears when certain actions are started.  It is however updating the database that is taking the most time, not the calculation of cube moves.  Note that when running the app locally using VSCode the database update is very quick (potentially no need for a loading screen) however when previously working on CS50 IDE the database update took a noticable time (approx 3-4 seconds).  The loading screen has been left in for now, however maybe this could be removed after testing on Heroku (future work).
+- There is a Loading overlay that appears when certain actions are started.  It is however updating the database that is taking the most time, not the calculation of cube moves.  Note that when running the app locally (i.e. when using VSCode) the database update is very quick (potentially no need for a loading screen) however when previously working on CS50 IDE the database update took a noticable time (approx 3-4 seconds).  The loading screen has been left in for now, however maybe this could be removed after testing on Heroku (future work) if the database .
 - The database is accessed using the sqlite3 module (after originally using the CS50 SQL module).
 - The moves calculated would likley originally comprise of a number of opposite moves followed after each other, and also triple rotations (equal to one rotation in the opposite direction), so the web app simplifies the required list of moves to delete opposite moves and replace triple moves with the opposite move.
 - Includes a feature to make 100,000 random moves on a cube just to demonstrate that this wouldnt solve the rubiks cube.
