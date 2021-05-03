@@ -602,7 +602,10 @@ def solve_entirely():
             complete_solve_list.append(move)
         # Improve efficiency of moves in next_actions_list and render.
         next_actions_list = helpers.improve_efficiency(complete_solve_list)
-        return render_template("solve.html", next_actions_list=complete_solve_list, squares=config.squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=starting_progress)
+        # Look up nick name of current stage.
+        stage_name = config.stage_names[progress]
+        # Render solve page.
+        return render_template("solve.html", next_actions_list=complete_solve_list, squares=config.squares, cube=session["cube"], next_cube=session["next_cube_colours"], current_cube_id=session["current_cube_id"], progress=starting_progress, stage_name=stage_name)
 
 
 # Function to record the user has correctly followed the moves of this stage,
