@@ -1,6 +1,6 @@
 from flask import session # Used to manage current user, cube & moves.
 import config # Contains large or repeatedly used data.
-
+import helpers
 
 # Determine moves required to solve Stage 0, the daisy stage.
 # Append moves required to a list as moves are determined.
@@ -19,7 +19,7 @@ def solve_stage_0(cube, progress, next_actions_list):
                 while cube[top_square] == "white":
                     # Rotate top face to avoid existing white square
                     # on top face.
-                    cube = move('U', cube)
+                    cube = helpers.move('U', cube)
                     next_actions_list.append("U")
                 # If corresponding square on top face is not white,
                 # move white square from bottom face to top face.
@@ -29,7 +29,7 @@ def solve_stage_0(cube, progress, next_actions_list):
                         # Append required moves to the list.
                         next_actions_list.append(action)
                         # Make required moves to cube.
-                        cube = move(action, cube)
+                        cube = helpers.move(action, cube)
         # Now there should be no white squares on the bottom face.
         print("NEXT - NO WHITE SQUARES ON BOTTOM FACE")
 
@@ -43,7 +43,7 @@ def solve_stage_0(cube, progress, next_actions_list):
                 top_square = config.daisy_middle_reference_top_square[square]
                 while cube[top_square] == 'white':
                     # Rotate top face to find alternative.
-                    cube = move('U', cube)
+                    cube = helpers.move('U', cube)
                     next_actions_list.append("U")
                 # If relevant square on top face is not white, then
                 # add appropriate move to queue.
@@ -52,7 +52,7 @@ def solve_stage_0(cube, progress, next_actions_list):
                     next_actions_list.append(action)
                     # Convert Cube Notation into actual move_xx to
                     # action on next_cube_colours.
-                    cube = move(action, cube)
+                    cube = helpers.move(action, cube)
         print("NEXT - NO WHITE SQUARES FOUND IN MIDDLE ROW")
         # Now there should be no white edge pieces in the middle row.
 
@@ -67,7 +67,7 @@ def solve_stage_0(cube, progress, next_actions_list):
                 while cube[top_square] == 'white':
                     # If appropriate top face square is white,
                     # rotate top face to find alternative.
-                    cube = move('U', cube)
+                    cube = helpers.move('U', cube)
                     print("NEXT - MAKE MOVE U")
                     next_actions_list.append("U")
                 # If appropritate top face square is not white, make
@@ -79,7 +79,7 @@ def solve_stage_0(cube, progress, next_actions_list):
                         # Append required moves to the list.
                         next_actions_list.append(action)
                         # Make required moves to cube.
-                        cube = move(action, cube)
+                        cube = helpers.move(action, cube)
         # Now there should be no white squares in the bottom row.
         print("NEXT - NO WHITE SQUARES FOUND IN BOTTOM ROW")
 
@@ -97,13 +97,13 @@ def solve_stage_0(cube, progress, next_actions_list):
                     # Append required moves to the list.
                     next_actions_list.append(action)
                     # Make required moves to cube.
-                    cube = move(action, cube)
+                    cube = helpers.move(action, cube)
         # Now there should be no white squares in the top row.
         print("NEXT - NO WHITE SQUARES FOUND IN TOP ROW")
         
         # Check to see if the above has solved this stage to
         # either end loop or continue to loop until solved.
-        progress = solve_progress(cube)
+        progress = helpers.solve_progress(cube)
 
     # Stage 0 has now been solved.
     print("NEXT - PROGRESS NO LONGER 0.")
@@ -126,62 +126,62 @@ def solve_stage_1(cube, progress, next_actions_list):
         # Resolve front face.
         while cube['ftm'] != cube['fmm'] or cube['ubm'] != 'white':
             # Rotate top face of cube.
-            cube = move('U', cube)
+            cube = helpers.move('U', cube)
             # Append required move to the list.
             next_actions_list.append('U')
         # Correctly aligned, so move top face square to bottom face.
         else:
             # Rotate front face twice.
-            cube = move('F', cube)
-            cube = move('F', cube)
+            cube = helpers.move('F', cube)
+            cube = helpers.move('F', cube)
             # Append moves to the list.
             next_actions_list.append('F')
             next_actions_list.append('F')
         # Resolve left face.
         while cube['ltm'] != cube['lmm'] or cube['uml'] != 'white':
             # Rotate top face of cube.
-            cube = move('U', cube)
+            cube = helpers.move('U', cube)
             # Append required move to the list.
             next_actions_list.append('U')
         # Correctly aligned, so move top face square to bottom face.
         else:
             # Rotate left face twice.
-            cube = move('L', cube)
-            cube = move('L', cube)
+            cube = helpers.move('L', cube)
+            cube = helpers.move('L', cube)
             # Append moves to the list.
             next_actions_list.append('L')
             next_actions_list.append('L')
         # Resolve back face.
         while cube['btm'] != cube['bmm'] or cube['utm'] != 'white':
             # Rotate front face twice.
-            cube = move('U', cube)
+            cube = helpers.move('U', cube)
             # Append required move to the list.
             next_actions_list.append('U')
         # Correctly aligned, so move top face square to bottom face.
         else:
             # Rotate back face twice.
-            cube = move('B', cube)
-            cube = move('B', cube)
+            cube = helpers.move('B', cube)
+            cube = helpers.move('B', cube)
             # Append moves to the list.
             next_actions_list.append('B')
             next_actions_list.append('B')
         # Resolve right face.
         while cube['rtm'] != cube['rmm'] or cube['umr'] != 'white':
             # Rotate front face twice.
-            cube = move('U', cube)
+            cube = helpers.move('U', cube)
             # Append required move to the list.
             next_actions_list.append('U')
         # Correctly aligned, so move top face square to bottom face.
         else:
             # Rotate right face twice.
-            cube = move('R', cube)
-            cube = move('R', cube)
+            cube = helpers.move('R', cube)
+            cube = helpers.move('R', cube)
             # Append moves to the list.
             next_actions_list.append('R')
             next_actions_list.append('R')
         # Check to see if the above has solved this stage to
         # either end loop or continue to loop until solved.
-        progress = solve_progress(cube)
+        progress = helpers.solve_progress(cube)
     
     # Stage 1 has now been solved.
     print("NEXT - PROGRESS NO LONGER 1.")
@@ -223,13 +223,13 @@ def solve_stage_2(cube, progress, next_actions_list):
                             # Append move to list.
                             next_actions_list.append(action)
                             # Make moves to cube.
-                            cube = move(action, cube)
+                            cube = helpers.move(action, cube)
                     # Check if adjacent square does not match the adjacent
                     # face centre square.
                     else:
                         print("NEXT 2.04 - TOP ROW WHITE SQUARE NOT CORRECT, ROTATE TOP ROW")
                         # Rotate top row of cube.
-                        cube = move('U', cube)
+                        cube = helpers.move('U', cube)
                         # Add move to list.
                         next_actions_list.append("U")
             # If no white squares found in top row, break loop.
@@ -252,7 +252,7 @@ def solve_stage_2(cube, progress, next_actions_list):
                     # Append move to list.
                     next_actions_list.append(action)
                     # Make moves to cube.
-                    cube = move(action, cube)
+                    cube = helpers.move(action, cube)
                 # If a square has been found, stop looking so this
                 # square can be correctly resolved.
                 break
@@ -271,11 +271,11 @@ def solve_stage_2(cube, progress, next_actions_list):
         if (cube['dtl'] == 'white' and (cube['fbl'] != 'blue' or cube['lbr'] != 'orange')):
             # If found to be incorrect, make moves to bring incorrect
             # cubelette into top row and append moves to list.
-            cube = move("L'", cube)
+            cube = helpers.move("L'", cube)
             next_actions_list.append("L'")
-            cube = move("U'", cube)
+            cube = helpers.move("U'", cube)
             next_actions_list.append("U'")
-            cube = move("L", cube)
+            cube = helpers.move("L", cube)
             next_actions_list.append("L")
             print("NEXT - SQUARE dtl MOVED, LOOPING BACK")
             # Loop back to resolve moved squares accordingly.
@@ -284,11 +284,11 @@ def solve_stage_2(cube, progress, next_actions_list):
         if (cube['dtr'] == 'white' and (cube['fbr'] != 'blue' or cube['rbl'] != 'red')):
             # If found to be incorrect, make moves to bring incorrect
             # cubelette into top row and append moves to list.
-            cube = move("R", cube)
+            cube = helpers.move("R", cube)
             next_actions_list.append("R")
-            cube = move("U", cube)
+            cube = helpers.move("U", cube)
             next_actions_list.append("U")
-            cube = move("R'", cube)
+            cube = helpers.move("R'", cube)
             next_actions_list.append("R'")
             print("NEXT - SQUARE dtr MOVED, LOOPING BACK")
             # Loop back to resolve moved squares accordingly.
@@ -297,11 +297,11 @@ def solve_stage_2(cube, progress, next_actions_list):
         if (cube['dbr'] == 'white' and (cube['bbl'] != 'green' or cube['rbr'] != 'red')):
             # If found to be incorrect, make moves to bring incorrect
             # cubelette into top row and append moves to list.
-            cube = move("R'", cube)
+            cube = helpers.move("R'", cube)
             next_actions_list.append("R'")
-            cube = move("U'", cube)
+            cube = helpers.move("U'", cube)
             next_actions_list.append("U'")
-            cube = move("R", cube)
+            cube = helpers.move("R", cube)
             next_actions_list.append("R")
             print("NEXT - SQUARE dbr MOVED, LOOPING BACK")
             # Loop back to resolve moved squares accordingly.
@@ -310,11 +310,11 @@ def solve_stage_2(cube, progress, next_actions_list):
         if (cube['dbl'] == 'white' and (cube['fbl'] != 'blue' or cube['lbr'] != 'orange')):
             # If found to be incorrect, make moves to bring incorrect
             # cubelette into top row and append moves to list.
-            cube = move("L", cube)
+            cube = helpers.move("L", cube)
             next_actions_list.append("L")
-            cube = move("U", cube)
+            cube = helpers.move("U", cube)
             next_actions_list.append("U")
-            cube = move("L'", cube)
+            cube = helpers.move("L'", cube)
             next_actions_list.append("L'")
             print("NEXT - SQUARE dbl MOVED, LOOPING BACK")
             # Loop back to resolve moved squares accordingly.
@@ -335,7 +335,7 @@ def solve_stage_2(cube, progress, next_actions_list):
                 # is not above a white square.
                 if cube[config.top_face_corner_squares[square]] == 'white':
                     # Make moves to cube.
-                    cube = move('U', cube)
+                    cube = helpers.move('U', cube)
                     # Append move to list.
                     next_actions_list.append("U")
                     print("NEXT - TOP FACE ROTATED")
@@ -347,7 +347,7 @@ def solve_stage_2(cube, progress, next_actions_list):
                         # Append moves to list.
                         next_actions_list.append(action)
                         # Make moves to cube.
-                        cube = move(action, cube)
+                        cube = helpers.move(action, cube)
                 # If a square has been found, loop back to start to correctly
                 # resolve that square before proceeding further.
                 print("NEXT - LOOPING BACK AFTER TOP FACE SQUARE MOVED")
@@ -355,7 +355,7 @@ def solve_stage_2(cube, progress, next_actions_list):
         print("NEXT - NO WHITE SQUARES FOUND ON TOP FACE")
         # Run progress check to confirm this stage is now solved and
         # to end the loop if solved.
-        progress = solve_progress(cube)
+        progress = helpers.solve_progress(cube)
     
     # Stage 2 has now been solved.
     print("NEXT - PROGRESS NO LONGER 2, WHITE FACE NOW SOLVED")
@@ -415,7 +415,7 @@ def solve_stage_3(cube, progress, next_actions_list):
                         # so rotate top row.
                         print("NEXT 3.03, middle row - middle square " + cube[centre_square] + " does not match top square " + cube[square] + ", so rotate.")
                         # Make required moves to cube.
-                        cube = move("U", cube)
+                        cube = helpers.move("U", cube)
                         # Append moves to list.
                         next_actions_list.append("U")
                         # Loop back around until face/square match.
@@ -452,7 +452,7 @@ def solve_stage_3(cube, progress, next_actions_list):
                             # Append appropriate trigger moves to list.
                             next_actions_list.append(action)
                             # Make required trigger moves to cube.
-                            cube = move(action, cube)
+                            cube = helpers.move(action, cube)
                         print("NEXT 3.07, middle row - moves made to cube.")
             
             # If squares found above, loop round again to continue
@@ -465,7 +465,7 @@ def solve_stage_3(cube, progress, next_actions_list):
                 break
         # The above may have solved this stage, so check progress and
         # either finalise this stage if solved, or continue to solve.
-        progress = solve_progress(cube)
+        progress = helpers.solve_progress(cube)
         if progress != 3:
             break
         
@@ -487,7 +487,7 @@ def solve_stage_3(cube, progress, next_actions_list):
                     # Append moves to list.
                     next_actions_list.append(action)
                     # Make moves to cube.
-                    cube = move(action, cube)
+                    cube = helpers.move(action, cube)
                 # Break loop to solve square that is now in top row.
                 break
         # If incorrect square found above, this will now be in the top
@@ -529,7 +529,7 @@ def solve_stage_4(cube, progress, next_actions_list):
                 # Append moves to list.
                 next_actions_list.append(action)
                 # Make moves to cube.
-                cube = move(action, cube)
+                cube = helpers.move(action, cube)
         
         # If there are two yellow edge squares on opposite ends
         # (forming a line), arrange the top face so they are in
@@ -542,10 +542,10 @@ def solve_stage_4(cube, progress, next_actions_list):
                     # Append fururf moves to list.
                     next_actions_list.append(action)
                     # Make fururf moves to cube.
-                    cube = move(action, cube)
+                    cube = helpers.move(action, cube)
             elif (cube['uml'] == 'yellow' and cube['umr'] == 'yellow'):
                 # Orientation is incorrect, rotate top face.
-                cube = move("U", cube)
+                cube = helpers.move("U", cube)
                 # Append move to list.
                 next_actions_list.append("U")
                 # Orientation now corrected, do fururf algorithm.
@@ -553,14 +553,14 @@ def solve_stage_4(cube, progress, next_actions_list):
                     # Append fururf moves to list.
                     next_actions_list.append(action)
                     # Make fururf moves to cube.
-                    cube = move(action, cube)
+                    cube = helpers.move(action, cube)
             # If there are two yellow edge squares in an L-shape:
             else:
                 # Rotate top face until yellow edge squares are in the
                 # utm and uml positions, then do FURURF algorithm.
                 while ((cube['uml'] != 'yellow') or (cube['utm'] != 'yellow')):
                     # Orientation is incorrect, rotate top face.
-                    cube = move("U", cube)
+                    cube = helpers.move("U", cube)
                     # Append move to list.
                     next_actions_list.append("U")
                 # Orientation is correct.
@@ -568,7 +568,7 @@ def solve_stage_4(cube, progress, next_actions_list):
                     # Append fururf moves to list.
                     next_actions_list.append(action)
                     # Make fururf moves to cube.
-                    cube = move(action, cube)
+                    cube = helpers.move(action, cube)
 
         # If there are three yellow edge squares on top, rotate top
         # face so the only non-yellow edge square is in umr position,
@@ -577,7 +577,7 @@ def solve_stage_4(cube, progress, next_actions_list):
             # Rotate top face until orientation is correct.
             while ((cube['uml'] != 'yellow') or (cube['utm'] != 'yellow') or (cube['ubm'] != 'yellow')):
                 # Make move to cube.
-                cube = move("U", cube)
+                cube = helpers.move("U", cube)
                 # Append move to list.
                 next_actions_list.append("U")
             # When orientation is correct, then do FURURF algorithm.
@@ -585,11 +585,11 @@ def solve_stage_4(cube, progress, next_actions_list):
                 # Append fururf moves to list.
                 next_actions_list.append(action)
                 # Make fururf moves to cube.
-                cube = move(action, cube)
+                cube = helpers.move(action, cube)
         
         # Check to see if the above has solved this stage to
         # either end loop or continue to loop until solved.
-        progress = solve_progress(cube)
+        progress = helpers.solve_progress(cube)
     
     # Stage 4 has now been solved.
     print("NEXT 4., yellow cross - end of function")
@@ -623,7 +623,7 @@ def solve_stage_5(cube, progress, next_actions_list):
             # Rotate top face until ubl square is yellow.
             while cube['ubl'] != 'yellow':
                 # Rotate top face of cube.
-                cube = move("U", cube)
+                cube = helpers.move("U", cube)
                 # Append moves to list.
                 next_actions_list.append("U")
             # Then do rururuur algorithm.
@@ -631,7 +631,7 @@ def solve_stage_5(cube, progress, next_actions_list):
                 # Append rururuur moves to list.
                 next_actions_list.append(action)
                 # Make rururuur moves to cube.
-                cube = move(action, cube)
+                cube = helpers.move(action, cube)
 
         # If zero or >1 top face corner squares are yellow then rotate
         # top face until ltr is yellow, then do RURURUUR algorithm.
@@ -639,7 +639,7 @@ def solve_stage_5(cube, progress, next_actions_list):
             # Rotate top face until ltr square is yellow.
             while cube['ltr'] != 'yellow':
                 # Rotate top face of cube.
-                cube = move("U", cube)
+                cube = helpers.move("U", cube)
                 # Append move to list.
                 next_actions_list.append("U")
             # Then do RURURUUR algorithm.
@@ -647,11 +647,11 @@ def solve_stage_5(cube, progress, next_actions_list):
                 # Append rururuur moves to list.
                 next_actions_list.append(action)
                 # Make rururuur moves to cube.
-                cube = move(action, cube)
+                cube = helpers.move(action, cube)
         
         # Check to see if the above has solved this stage to either
         # end loop or continue to loop until solved.
-        progress = solve_progress(cube)
+        progress = helpers.solve_progress(cube)
     
     # Stage 5 has now been solved.
     print("NEXT 5., yellow face done - end of function")
@@ -721,7 +721,7 @@ def solve_stage_6(cube, progress, next_actions_list):
                 # Make moves clockwise
                 for i in range(rotations):
                     # Make move to cube.
-                    cube = move("U", cube)
+                    cube = helpers.move("U", cube)
                     # Append move to list.
                     next_actions_list.append("U")
             else:
@@ -729,7 +729,7 @@ def solve_stage_6(cube, progress, next_actions_list):
                 rotations = rotations * -1
                 for i in range(rotations):
                     # Make move to cube.
-                    cube = move("U'", cube)
+                    cube = helpers.move("U'", cube)
                     # Append move to list.
                     next_actions_list.append("U'")
             # Then perform algorithm to begin to solve all corners.
@@ -737,7 +737,7 @@ def solve_stage_6(cube, progress, next_actions_list):
                 # Append required corner solve moves to list.
                 next_actions_list.append(action)
                 # Make corner solve moves to cube.
-                cube = move(action, cube)
+                cube = helpers.move(action, cube)
 
         # If there are no matching corners, perform algorithm as if
         # left face was matching.
@@ -746,11 +746,11 @@ def solve_stage_6(cube, progress, next_actions_list):
                 # Append moves to list.
                 next_actions_list.append(action)
                 # Make moves to cube.
-                cube = move(action, cube)
+                cube = helpers.move(action, cube)
         
         # Check to see if the above has solved this stage to
         # either end loop or continue to loop until solved.
-        progress = solve_progress(cube)
+        progress = helpers.solve_progress(cube)
     
     # Stage 6 has now been solved.
     print("NEXT 6., top corners done - end of function")
@@ -803,7 +803,7 @@ def solve_stage_7(cube, progress, next_actions_list):
                 # Add anti-clockwise moves to list.
                 next_actions_list.append(action)
                 # Make anti-clockwise moves to cube.
-                cube = move(action, cube)
+                cube = helpers.move(action, cube)
         # If a face is solved, check if top row needs moving clockwise
         # or anti-clockwise, then make appropriate moves.
         if face_solved is True:
@@ -834,11 +834,11 @@ def solve_stage_7(cube, progress, next_actions_list):
                 # Append moves to list.
                 next_actions_list.append(action)
                 # Make moves to cube.
-                cube = move(action, cube)
+                cube = helpers.move(action, cube)
         
         # Check to see if the above has solved this stage to either
         # end loop or continue to loop until solved.
-        progress = solve_progress(cube)
+        progress = helpers.solve_progress(cube)
     
     # Stage 7 has now been solved.
     print("NEXT 7., top edge pieces done, cube solved - end of function")
