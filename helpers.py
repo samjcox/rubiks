@@ -1,7 +1,12 @@
-from flask import session # Used to manage current user, cube & moves.
+# Standard library modules
+import random
+
+# Non-standard modules
+from flask import session
+
+# Other files within application
 import config # Contains large or repeatedly used data.
-import random # Used to generate random numbers.
-import solvers
+import solvers # Used to make the required moves to the cube.
 
 
 # Select random cube move and make that move to the input cube.

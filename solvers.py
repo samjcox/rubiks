@@ -1,6 +1,12 @@
+# Standard library modules
+# None
+
+# Non-standard modules
 from flask import session # Used to manage current user, cube & moves.
+
+# Other files within application
 import config # Contains large or repeatedly used data.
-import helpers
+import helpers # Contains functions to support the main routes.
 
 # Determine moves required to solve Stage 0, the daisy stage.
 # Append moves required to a list as moves are determined.

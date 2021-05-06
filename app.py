@@ -1,16 +1,20 @@
+# Standard library modules
 import os
 import datetime
 import random
-import helpers
-import config
 import sqlite3
+from tempfile import mkdtemp
+from functools import wraps
 
+# Non-standard modules
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
-from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-from functools import wraps
+
+# Other files within application
+import helpers # Contains functions to support the main routes.
+import config # Contains large or repeatedly used data.
 
 # Configure application
 app = Flask(__name__)
