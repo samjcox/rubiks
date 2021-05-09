@@ -41,7 +41,7 @@
                         <td>{{ id.stage }}/8</td>
                         <td><form method = "post" action="/load"><button name="load" class="btn btn-outline-primary btn-sm" type="submit" value={{ id.id }}>Load</button></form></td>
                         <td>{{ id.created }}</td>
-                        <td>{{ id.check }}</td>
+                        <td>{{ id.input_check }}</td>
                         <td><form method = "post" action="/amend_from_list"><button name="amend" class="btn btn-outline-success btn-sm" type="submit" value={{ id.id }}>Amend</button></form></td>
                         <td><form method = "post" action="/copy"><button name="copy" onclick="loading_on()" class="btn btn-outline-secondary btn-sm" type="submit" value={{ id.id }}>Copy</button></form></td>
                         <td><form method = "post" action="/delete_cube"><button name="delete" onclick="loading_on()" class="btn btn-outline-danger btn-sm" type="submit" value={{ id.id }}>Delete</button></form></td>
