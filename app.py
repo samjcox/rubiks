@@ -13,8 +13,8 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from flask_sqlalchemy import SQLAlchemy
 
-# from flask_sqlalchemy import SQLAlchemy
 # import psycopg2
 
 # Other files within application
@@ -90,8 +90,9 @@ def login():
             flash("Password was not entered, please enter password.")
             return render_template("/login.html")
         # Check database for username and password.
-        rows = db.execute("SELECT * FROM users WHERE username = (:username)",
-            {"username": request.form.get("username")}).fetchall()
+        SQL = "SELECT * FROM users WHERE username = (:username)"
+        data = {"username": request.form.get("username")}
+        rows = db.execute(SQL, data).fetchall()
         # Commit & close database connection.
         db_close()
         # Check if password matches or if no password found in database.
@@ -130,8 +131,9 @@ def register():
             flash("Username required.")
             return redirect("/register")
         # Check that username does not already exist.
-        username = db.execute("SELECT username FROM users WHERE username = :username",
-            {"username": request.form.get("username")}).fetchall()
+        SQL = "SELECT username FROM users WHERE username = :username"
+        data = {"username": request.form.get("username")}
+        username = db.execute(SQL, data).fetchall()
         # Close database connection.
         db_close()
         # If username already exists, alert user and return.
@@ -158,11 +160,13 @@ def register():
         # Hash password
         hashed = generate_password_hash(password, "sha256")
         # Submit username and hashed password to database.
-        db.execute("INSERT INTO users (username, hashed_password) VALUES (:username, :hashed)",
-            {"username": request.form.get("username"), "hashed": hashed})
+        SQL = "INSERT INTO users (username, hashed_password) VALUES (:username, :hashed)"
+        data = {"username": request.form.get("username"), "hashed": hashed}
+        db.execute(SQL, data)
         # Automatically log user in.
-        user_id = db.execute("SELECT id FROM users WHERE username = (:username)",
-            {"username": request.form.get("username")}).fetchall()
+        SQL = "SELECT id FROM users WHERE username = (:username)"
+        data = {"username": request.form.get("username")}
+        user_id = db.execute(SQL, data).fetchall()
         session['user_id'] = user_id[0]["id"]
         session["username"] = request.form.get("username")
         # Commit & close database connection.
@@ -175,8 +179,9 @@ def register():
 # Load this users cubes, ready for display.
 def load_users_cubes():
     # Display previously entered cubes for this user.
-    users_cubes = db.execute("SELECT * FROM cubes WHERE user_id = (:user_id) ORDER BY id DESC",
-        {"user_id": session["user_id"]}).fetchall()
+    SQL = "SELECT * FROM cubes WHERE user_id = (:user_id) ORDER BY id DESC"
+    data = {"user_id": session["user_id"]}
+    users_cubes = db.execute(SQL, data).fetchall()
     # Close database connection.
     db_close()
     return users_cubes
@@ -206,8 +211,9 @@ def load_page():
 def delete_cube():
     # Delete the selected cube from the database.
     cube_to_delete = request.form.get("delete")
-    db.execute("DELETE FROM cubes WHERE id = :cube_to_delete",
-        {"cube_to_delete": cube_to_delete})
+    SQL = "DELETE FROM cubes WHERE id = :cube_to_delete"
+    data = {"cube_to_delete": cube_to_delete}
+    db.execute(SQL, data)
     # Commit & close database connection.
     db_close()
     # If sessions current cube is the cube to be deleted, set current cube to zero.
@@ -223,8 +229,9 @@ def delete_cube():
 @login_required
 def delete_all_cubes():
     # Delete all cubes that belong to this user.
-    db.execute("DELETE FROM cubes WHERE user_id = :user_id",
-    {"user_id": session["user_id"]})
+    SQL = "DELETE FROM cubes WHERE user_id = :user_id"
+    data = {"user_id": session["user_id"]}
+    db.execute(SQL, data)
     # Commit & close database connection.
     db_close()
     # Set current cube to zero.
@@ -238,11 +245,13 @@ def delete_all_cubes():
 def create_cube():
     # Create new cube in database to generate cube ID number.
     created = datetime.datetime.now()
-    db.execute("INSERT INTO cubes (user_id, created) VALUES (:user_id, :created)",
-        {"user_id": session["user_id"], "created": created})
+    SQL = "INSERT INTO cubes (user_id, created) VALUES (:user_id, :created)"
+    data = {"user_id": session["user_id"], "created": created}
+    db.execute(SQL, data)
     # Find the ID of the cube that has just been created.
-    cube_id_list = db.execute("SELECT id FROM cubes WHERE user_id = :user_id ORDER BY created DESC LIMIT 1",
-        {"user_id": session["user_id"]}).fetchall()
+    SQL = "SELECT id FROM cubes WHERE user_id = :user_id ORDER BY created DESC LIMIT 1"
+    data = {"user_id": session["user_id"]}
+    cube_id_list = db.execute(SQL, data).fetchall()
     # Commit & close database connection.
     db_close()
     # Store Id of this new cube and clear the session cube.
@@ -285,20 +294,9 @@ def check_cube():
     if not session["errors"]:
         # Add "no errors" & progress status to database.
         progress = helpers.solve_progress(session["cube"])
-
-        # db.execute("UPDATE cubes SET 'check' = 'Input Ok', stage = (%s) WHERE id = (%s)",
-        #     (progress, session["current_cube_id"],))
-        
-        SQL = "UPDATE cubes SET (stage) = (:stage) WHERE (id) = (:cube_id);"
-        data = ({"stage": progress, "cube_id": session["current_cube_id"]})
+        SQL = "UPDATE cubes SET (input_check, stage) = ('Input Ok', :stage) WHERE (id) = (:cube_id);"
+        data = ({"stage": progress, "cube_id": session["current_cube_id"]}, )
         db.execute(SQL, data)
-
-        # db.execute("UPDATE cubes SET (stage) = (%s) WHERE (id) = (%s)",
-        #     {"stage": progress, "cube_id": session["current_cube_id"]})
-
-
-        # db.execute("UPDATE cubes SET 'check' = 'Input Ok', stage = :stage WHERE id = :cube_id",
-        #     {"stage": progress, "cube_id": session["current_cube_id"]})
         # Commit & close database connection.
         db_close()
         # Flash message to confirm successful save.
@@ -309,15 +307,9 @@ def check_cube():
     # If errors found, list those errors and ask user to correct.
     else:
         # Load "amend" page to display errors and resolve them.
-        check = 'check'
-
-        update_query = f"UPDATE cubes SET {check} = :message WHERE id = :cube_id"
-        print(update_query)
-        db.execute(update_query, {"message": 'Error', "cube_id": session["current_cube_id"]})
-        
-        
-        # db.execute("UPDATE cubes SET 'check' = 'Error' WHERE id = :cube_id",
-        #     {"cube_id": session["current_cube_id"]})
+        SQL = "UPDATE cubes SET (input_check) = row('Error') WHERE (id) = (:cube_id);"
+        data = ({"message": 'Error', "cube_id": session["current_cube_id"]})
+        db.execute(SQL, data)
         # Commit & close database connection.
         db_close()
         # Flash message to advise that error needs to be resolved.
@@ -397,9 +389,9 @@ def random_cube():
         # better way to update 54 SQL columns, to be investigated.
         # Note that as the input to the below SQL query is hard-coded,
         # there should be no risk of SQL injection attack.
-        update_query = f"UPDATE cubes SET {square} = :square WHERE id = :cube_id"
-        print(update_query)
-        db.execute(update_query, {"square": cube[square], "cube_id": session["current_cube_id"]})
+        SQL = f"UPDATE cubes SET {square} = :square WHERE id = :cube_id"
+        data = {"square": cube[square], "cube_id": session["current_cube_id"]}
+        db.execute(SQL, data)
     # Commit & close database connection.
     db_close()
     # Update session cube & return cube check:
@@ -428,8 +420,9 @@ def enter():
         for square in cube:
             square_colour = request.form.get(square)
             cube[square] = square_colour
-            update_query = f"UPDATE cubes SET {square} = :square_colour WHERE id = :cube_id"
-            db.execute(update_query, {"square_colour": square_colour, "cube_id": session["current_cube_id"]})
+            SQL = f"UPDATE cubes SET {square} = :square_colour WHERE id = :cube_id"
+            data = {"square_colour": square_colour, "cube_id": session["current_cube_id"]}
+            db.execute(SQL, data)
         # Commit & close database connection.
         db_close()
         # Update session cube & return cube check:
@@ -444,8 +437,9 @@ def load():
     cube_to_load = request.form.get("load")
     session["current_cube_id"] = cube_to_load
     # Load cube from database into session cube.
-    cube_loading = db.execute("SELECT * FROM cubes WHERE id = :cube_to_load",
-        {"cube_to_load": cube_to_load}).fetchall()
+    SQL = "SELECT * FROM cubes WHERE id = :cube_to_load"
+    data = {"cube_to_load": cube_to_load}
+    cube_loading = db.execute(SQL, data).fetchall()
     session["cube"] = cube_loading[0]
     # Commit & close database connection.
     db_close()
@@ -461,8 +455,9 @@ def amend_from_list():
     cube_to_amend = request.form.get("amend")
     session["current_cube_id"] = cube_to_amend
     # Load cube from database into session cube.
-    cube_loading = db.execute("SELECT * FROM cubes WHERE id = :cube_to_amend",
-        {"cube_to_amend": cube_to_amend}).fetchall()
+    SQL = "SELECT * FROM cubes WHERE id = :cube_to_amend"
+    data = {"cube_to_amend": cube_to_amend}
+    cube_loading = db.execute(SQL, data).fetchall()
     session["cube"] = cube_loading[0]
     # Commit & close database connection.
     db_close()
@@ -477,31 +472,22 @@ def copy():
     # Load cube to be copied into temporary dictionary.
     cube_id_to_copy = request.form.get("copy")
     # Load cube from database into temp cube.
-    cube_loading = db.execute("SELECT * FROM cubes WHERE id = :cube_id_to_copy",
-        {"cube_id_to_copy": cube_id_to_copy}).fetchall()
+    SQL = "SELECT * FROM cubes WHERE id = :cube_id_to_copy"
+    data = {"cube_id_to_copy": cube_id_to_copy}
+    cube_loading = db.execute(SQL, data).fetchall()
     temp_cube = cube_loading[0]
     # Create new blank cube, and make current session cube.
     create_cube()
     # Populate curret session cube with previous cube contents.
-    print("TEMP_CUBE:")
-    print(temp_cube)
-    print("SESSION CUBE BEFORE")
-    print(session["cube"])
-    print("SESSION CURRENT CUBE ID")
-    print(session["current_cube_id"])
-    print("SESSION CUBE ID")
-    print(session["cube"]["id"])
-
     session["cube"] = temp_cube
-    print("SESSION CUBE AFTER")
-    print(session["cube"])
     session["cube"]["id"] = session["current_cube_id"]
     # Save new cube contents to database.
     # Note that as the input to the below SQL query is hard-coded,
     # there should be no risk of SQL injection attack.
     for item in temp_cube:
-        update_query = f"UPDATE cubes SET {item} = :cube_item WHERE id = :cube_id"
-        db.execute(update_query, {"cube_item": session["cube"][item], "cube_id": session["current_cube_id"]})
+        SQL = f"UPDATE cubes SET {item} = (:cube_item) WHERE (id) = (:cube_id)"
+        data = {"cube_item": session["cube"][item], "cube_id": session["current_cube_id"]}
+        db.execute(SQL, data)
     # Commit & close database connection.
     db_close()
     # Flash message to user then proceed to home page.
@@ -524,9 +510,11 @@ def amend():
         # there should be no risk of SQL injection attack.
         for square in config.squares:
             square_colour = request.form.get(square)
+            # ?!?! TODO error here to be resolved.
             session["cube"][square] = square_colour
-            update_query = f"UPDATE cubes SET {square} = :colour WHERE id = :cube_id"
-            db.execute(update_query, {"colour": square_colour, "cube_id": session["current_cube_id"]})
+            SQL = f"UPDATE cubes SET {square} = (:colour) WHERE (id) = (:cube_id);"
+            data = ({"colour": session['cube'][square], "cube_id": session["current_cube_id"]})
+            db.execute(SQL, data)
         # Commit & close database connection.
         db_close()
         return check_cube()
@@ -540,8 +528,9 @@ def solve():
     current_cube_id = session["current_cube_id"]
     progress = helpers.solve_progress(session["cube"])
     # Update solve progress in database.
-    db.execute("UPDATE cubes SET 'stage' = :stage WHERE id = :cube_id",
-        {"stage": progress, "cube_id": session["current_cube_id"]})
+    SQL = "UPDATE cubes SET (stage) = row(:progress) WHERE (id) = (:cube_id);"
+    data = ({"progress": progress, "cube_id": session["current_cube_id"]}, )
+    db.execute(SQL, data)
     # Commit & close database connection.
     db_close()
     print("SOLVE - Progress stage found to be " + str(progress))
@@ -621,9 +610,6 @@ def solve_entirely():
 @app.route("/next_stage")
 @login_required
 def next_stage():
-    # Connect to database.
-    con = db_connect()
-    cur = con.cursor()
     # User has confirmed that they made the moves correctly, so
     # update session cube with next_cube_colours, then allowing
     # the solve to continue from that point. 
@@ -632,8 +618,9 @@ def next_stage():
         # Update the database with new cube state.
         # Note that as the input to the below SQL query is hard-coded,
         # there should be no risk of SQL injection attack.
-        update_query = f"UPDATE cubes SET {square} = :colour WHERE id = :cube_id"
-        db.execute(update_query, {"colour": session['cube'][square], "cube_id": session["current_cube_id"]})
+        SQL = f"UPDATE cubes SET {square} = (:colour) WHERE (id) = (:cube_id)"
+        data = ({"square": square, "colour": session['cube'][square], "cube_id": session["current_cube_id"]})
+        db.execute(SQL, data)
     # Commit & close database connection.
     db_close()
     print("NEXT_STAGE - Function complete.")
