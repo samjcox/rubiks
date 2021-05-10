@@ -14,8 +14,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_sqlalchemy import SQLAlchemy
-
-# import psycopg2
+import psycopg2
 
 # Other files within application
 import helpers # Contains functions to support the main routes.
