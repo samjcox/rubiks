@@ -52,6 +52,21 @@ if uri.startswith("postgres://"):
 engine = create_engine(uri)
 db = scoped_session(sessionmaker(bind=engine))
 
+# Heroku local / Foreman assumes that the process is long-lived. So currently
+# quits this app before being able to use it.  Therefore this is to keep the
+# app long-lived.
+
+def heroku_local_loop():
+    loop_count = 0
+    while loop_count < 100:
+        time_1 = datetime.datetime.now()
+        time_change = datetime.timedelta(seconds=3)
+        time_2 = time_1 + time_change
+        if time_1 > time_2:
+            print("TIME BASED UPDATE - for heroku local persistence.")
+            loop_count += 1
+heroku_local_loop()
+
 # Commit and close database.
 def db_close():
     db.commit()
