@@ -8,11 +8,11 @@ from functools import wraps
 
 # Non-standard modules
 from flask import Flask, flash, redirect, render_template, request, session
-# from flask_caching import Cache
+from flask_caching import Cache
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 # import psycopg2
-# import pylibmc
+import pylibmc
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
