@@ -6,6 +6,7 @@ This web app will allow a user to input their rubiks cube's arrangement and then
 This web app has been created as the final project for CS50.
 
 Heroku address: https://rubiks-cube-solver.herokuapp.com/
+
 Github repository: https://github.com/samjcox/rubiks
 
 #### Environment:
