@@ -8,16 +8,15 @@ from functools import wraps
 
 # Non-standard modules
 from flask import Flask, flash, redirect, render_template, request, session
+from flask_caching import Cache
 from flask_session import Session
-from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
-from werkzeug.security import check_password_hash, generate_password_hash
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
 from flask_sqlalchemy import SQLAlchemy
 import psycopg2
-
-from flask_caching import Cache
 import pylibmc
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # Other files within application
 import helpers # Contains functions to support the main routes.
@@ -36,14 +35,6 @@ def after_request(response):
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
-
-# # Configure session to use filesystem,
-# # (instead of signed cookies), sourced from CS50.
-# app.config["SESSION_FILE_DIR"] = mkdtemp()
-# app.config["SESSION_PERMANENT"] = False
-# app.config["SESSION_TYPE"] = "filesystem"
-# Session(app)
-
 
 # Configure Memcache for session storage, following this Heroku guide:
 # https://devcenter.heroku.com/articles/flask-memcache
