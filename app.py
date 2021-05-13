@@ -11,8 +11,6 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_caching import Cache
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
-# import psycopg2
-import pylibmc
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
@@ -298,8 +296,10 @@ def delete_all_cubes():
 
 # Create blank cube and store ID
 def create_cube():
+    # Determine time/date cube created, converted to users local time.
+    now = datetime.datetime.now()
+    created = now.strftime("%Y/%m/%d %H:%M:%S")
     # Create new cube in database to generate cube ID number.
-    created = datetime.datetime.now()
     SQL = "INSERT INTO cubes (user_id, created) VALUES (:user_id, :created)"
     data = {"user_id": session["user_id"], "created": created}
     db.execute(SQL, data)
