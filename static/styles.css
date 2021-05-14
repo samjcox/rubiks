@@ -22,7 +22,7 @@
 }
 
 .button-padding {
-    padding: 5px 0px;
+    padding: 10px 0px;
 }
 
 .text_and_button_grid {
@@ -74,8 +74,6 @@
         background-color: rgba(0,0,0,0.5);
         z-index: 2;
     }
-
-
 
 /* Amend / enter cube formatting */
     .enter-cube-layout {
@@ -144,22 +142,22 @@
         text-transform: capitalize;
         text-align: center;
         font-size: 13px;
-        padding: 0px; /* Use this to centre the text vertically, once size of boxes is finalised */
+        padding: 0px; /* this is to centre text vertically, once size of boxes is finalised */
     }
 
 /* Cube tables */
     .cube_tables {
         overflow: scroll;
+        margin: auto;
+        max-width: 700px;
     }
 
     #home_cube_table {
         height: 300px;
-        overflow: scroll;
     }
 
     #load_cube_table {
         height: 600px;
-        overflow: scroll;
     }
 
 

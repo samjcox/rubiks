@@ -24,12 +24,27 @@
     </div>
 
     <div class="row">
-        <div class="col" style="min-width:350px;">
-            <p>This site was built for the final project of <a href="https://cs50.harvard.edu/x/2021/" target="_blank">CS50x</a>.</p>
-            <p>This site will help you solve a Rubiks cube.  After entering your current cube configuration, the site will calculate what your next moves should be, all the way through to solving the cube!</p>
-            <p>There are different ways to solve a Rubiks cube, the manual method on this site uses an 8-step method as described in the adjacent video from Wired.  If you want to understand why each move is being made, or learn to solve a cube without this site, this video will explain.  If you just want to get cracking, no need to watch the video!</p>
+        <div class="col p-3" style="min-width:330px;">
+            <div class="accordion" id="usethissiteaccordian">
+                <div class="card">
+                  <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        How to use this site (dropdown)
+                      </button>
+                    </h5>
+                  </div>
+              
+                  <div id="collapseOne" class="collapse collapsed" aria-labelledby="headingOne" data-parent="#usethissiteaccordian">
+                    <div class="card-body">
+                        <p>After entering your current cube configuration, the site will calculate what your next moves should be, all the way through to solving the cube!
+                        There are different ways to solve a Rubiks cube, the manual method on this site uses an 8-step method as described in the adjacent video from Wired.  If you want to understand why each move is being made, or learn to solve a cube without this site, this video will explain.  If you just want to get cracking, no need to watch the video!</p>
+                    </div>
+                  </div>
+                </div>
+            </div>
         </div>
-        <div class="col" style="min-width:350px;">
+        <div class="col p-3" style="min-width:350px;">
             <div class="iframe-container">
                 <iframe class="responsive-iframe" src="https://www.youtube.com/embed/R-R0KrXvWbc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
@@ -38,48 +53,62 @@
 
     <h2>Create new cube:</h2>
     <div class="row">
-        <div class="col">
-            <p>If you wish to play around with the website without entering an actual cube, you can use "Create Random Solvable Cube" button below.  This will generate a random but solvable rubiks cube by performing 50 random moves on a solved cube. Otherwise if you want to solve an actual real-life cube, please select "manually enter new cube" below.  If you want to shuffle your real-life cube, use the Randomiser.</p>
+        <div class="col p-3"">
+            <div class="accordion" id="newcubeaccordian">
+                <div class="card">
+                  <div class="card-header" id="headingTwo">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                        How to Create a new cube (dropdown)
+                      </button>
+                    </h5>
+                  </div>
+              
+                  <div id="collapseTwo" class="collapse collapsed" aria-labelledby="headingTwo" data-parent="#newcubeaccordian">
+                    <div class="card-body">
+                        <p>If you wish to play around with the website without entering an actual cube, you can use "Create Random Solvable Cube" button below.  This will generate a random but solvable rubiks cube by performing 50 random moves on a solved cube. Otherwise if you want to solve an actual real-life cube, please select "manually enter new cube" below.  If you want to shuffle your real-life cube, use the Randomiser.</p>
+                    </div>
+                  </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div class="row button-padding">
+    <div class="row">
         <div class="col-sm">
             Push this button to generate a random solvable rubik's cube (in order to test the website!).  This will take a solved cube, then perform a random selection of moves on the cube:
         </div>
-        <div class="col-xs-auto centre">
+        <div class="col-xs-auto centre button-padding">
             <a href=random_cube><button style="width:210px;" onclick="loading_on()" class="btn btn-primary" type="button">Random Solvable Cube</button></a>
         </div>
     </div>
-    <div class="row button-padding">
+    <div class="row">
         <div class="col-sm">
             Push this button to manually enter your actual real-life cube to be solved:
         </div>
-        <div class="col-xs-auto centre">
+        <div class="col-xs-auto centre button-padding">
             <a href=enter><button style="width:210px;" class="btn btn-primary" type="button">Manually Enter Cube</button></a>
         </div>
     </div>
-    <div class="row button-padding">
+    <div class="row">
         <div class="col-sm">
             If you have a real-life cube and would like to shuffle it before trying to solve, use the Randomiser function:
         </div>
-        <div class="col-xs-auto centre">
+        <div class="col-xs-auto centre button-padding">
             <a href=randomise_user_cube><button style="width:210px;" class="btn btn-primary" type="button">Use Randomiser</button></a>
         </div>
     </div>
 
     <h2>Load existing cube:</h2>
 
-    <p>The below table lists the existing cubes created by this user. To continue to work on a cube you have already created, click "Load".  To change the colours on an existing cube, click "Amend".:</p>
-        <div class="cube_tables" id="home_cube_table">
+    <p>The below table lists the existing cubes created by you ({{ session.username }}). To continue to work on a cube you have already created, click "Load".  To change the colours on an existing cube, click "Amend":</p>
+        <div class="cube_tables bg-light" id="home_cube_table">
         <table class="table table-striped table-hover table-sm">
             <thead>
                 <tr>
-                    <th>Cube ID</th>
+                    <th>ID</th>
                     <th>Stage</th>
                     <th>Load</th>
                     <th>Created</th>
-                    <th>Input Check</th>
                     <th>Amend</th>
                     <th>Copy</th>
                     <th>Delete</th>
@@ -93,7 +122,6 @@
                         <td>{{ id.stage }}/8</td>
                         <td><form method = "post" action="/load"><button name="load" onclick="loading_on()" class="btn btn-outline-primary btn-sm" type="submit" value={{ id.id }}>Load</button></form></td>
                         <td>{{ id.created }}</td>
-                        <td>{{ id.input_check }}</td>
                         <td><form method = "post" action="/amend_from_list"><button name="amend" class="btn btn-outline-success btn-sm" type="submit" value={{ id.id }}>Amend</button></form></td>
                         <td><form method = "post" action="/copy"><button name="copy" onclick="loading_on()" class="btn btn-outline-secondary btn-sm" type="submit" value={{ id.id }}>Copy</button></form></td>
                         <td><form method = "post" action="/delete_cube"><button name="delete" onclick="loading_on()" class="btn btn-outline-danger btn-sm" type="submit" value={{ id.id }}>Delete</button></form></td>
