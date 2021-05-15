@@ -26,14 +26,27 @@
             </div>
         </div>
         <div class="row">
-            <div class="col p-3" style="min-width: 200px;">
-                <h2>Register</h2>
-                <p>If you do not already have an account, click Register to create an account and use this site to solve your cube:</p>
-                <a href="/register" class="btn btn-primary">Register</a>
-
+            <div class="col p-3 border rounded" style="min-width: 200px; margin:10px">
+                <h2>Register / Guest Login</h2>
+                <div class="row">
+                    <div class="col-sm my-auto" style="min-width:150px;">
+                        Click Register to create a new account if you wish to store your cubes:
+                    </div>
+                    <div class="col-xs-auto centre my-auto button-padding">
+                        <a href="/register" class="btn btn-primary" style="width:120px;">Register</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm my-auto" style="min-width:150px;">
+                        If you dont want to store any information, login as a guest:
+                    </div>
+                    <div class="col-xs-auto centre my-auto button-padding">
+                        <a href="/guest" class="btn btn-primary" style="width:120px;">Guest Login</a>
+                    </div>
+                </div>                    
             </div>
-            <div class="col p-3" style="min-width: 200px;">
-                <h2>Login</h2>
+            <div class="col p-3 border rounded" style="min-width: 200px; margin:10px">
+                <h2>Existing User Login</h2>
                 <p>If you have an account, login below:</p>
                 <form action="/login" method="post">
                     <div class="form-group">
@@ -42,15 +55,10 @@
                     <div class="form-group">
                         <input class="form-control" name="password" placeholder="Password" type="password">
                     </div>
-                    <button class="btn btn-primary" type="submit">Log In</button>
+                    <button class="btn btn-primary centre" type="submit">Log In</button>
                 </form>
             </div>
         </div>
-
-
-
-
     </div>
-
 
 {% endblock %}
