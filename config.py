@@ -270,7 +270,7 @@ move_definitions = {
 stage_names = [
     "Daisy", "White Cross", "White Face",
     "Middle Row", "Yellow Cross", "Yellow Face",
-    "Top Corners", "Top Row"
+    "Top Corners", "Final Stage"
 ]
 
 # Solve Stage 0:
