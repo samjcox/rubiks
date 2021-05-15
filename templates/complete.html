@@ -9,7 +9,7 @@
     <h1 style="text-align: center;">Well Done! Your cube is solved!</h1>
 
     <div class="row">
-        <div class="col">
+        <div class="col-sm">
             <div class="iframe-container">
                 <img class="responsive-iframe" src="{{url_for('static', filename='concert-2527495__340_from_pixabay.jpg')}}" alt="Celebration party"/>
             </div>
@@ -17,18 +17,18 @@
     </div>
     </br>
     <div class="row">
-        <div class="col">
-            <p>To go again with your real-life cube you can use the Randomiser to shuffle your cube:</p>
+        <div class="col-sm my-auto">
+            To go again with your real-life cube you can use the Randomiser to shuffle your cube:
         </div>
-        <div class="col-xs-auto">
+        <div class="col-xs-auto centre button-padding">
             <a href="/randomise_user_cube"><button style="width:200px;" class="btn btn-primary" type="button">Use Randomiser</button></a>
         </div>
     </div>
     <div class="row">
-        <div class="col">
-            <p>If your cube isn't actually solved, use Amend to update the program with your current cube state:</p>
+        <div class="col-sm my-auto">
+            If your cube isn't actually solved, use Amend to update the program with your current cube state:
         </div>
-        <div class="col-xs-auto">
+        <div class="col-xs-auto centre button-padding">
             <a href="/amend"><button style="width:200px;" class="btn btn-primary" type="button">Oops Amend</button></a>
         </div>
     </div>
