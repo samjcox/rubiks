@@ -268,9 +268,9 @@ move_definitions = {
 
 # Names of each stage.
 stage_names = [
-    "Daisy", "White Cross", "White Face",
-    "Middle Row", "Yellow Cross", "Yellow Face",
-    "Top Corners", "Final Stage"
+    "Daisy Stage", "White Cross Stage", "White Face Stage",
+    "Middle Row Stage", "Yellow Cross Stage", "Yellow Face Stage",
+    "Top Corners Stage", "Final Stage"
 ]
 
 # Solve Stage 0:
