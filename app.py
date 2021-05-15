@@ -139,13 +139,15 @@ def login():
         if not request.form.get("username"):
             flash("Username was not entered, please enter a username.")
             return render_template("/login.html")
+        else:
+            username = request.form.get("username")
         # Ensure password was entered.
         if not request.form.get("password"):
             flash("Password was not entered, please enter password.")
             return render_template("/login.html")
         # Check database for username and password.
         SQL = "SELECT * FROM users WHERE username = (:username)"
-        data = {"username": request.form.get("username")}
+        data = {"username": username}
         rows = db.execute(SQL, data).fetchall()
         # Commit & close database connection.
         db_close()
@@ -156,7 +158,7 @@ def login():
         # Remember user has logged in and set current cube to blank.
         session["user_id"] = rows[0]["id"]
         session["current_cube_id"] = 0
-        session["username"] = request.form.get("username")
+        session["username"] = username
         # Redirect to homepage.
         return redirect("/")
 
@@ -183,15 +185,17 @@ def register():
         if not request.form.get("username"):
             flash("Username required.")
             return redirect("/register")
+        else:
+            username = request.form.get("username")
         # Check that username does not already exist.
         SQL = "SELECT username FROM users WHERE username = :username"
-        data = {"username": request.form.get("username")}
-        username = db.execute(SQL, data).fetchall()
+        data = {"username": username}
+        existing_username = db.execute(SQL, data).fetchall()
         # Close database connection.
         db_close()
         # If username already exists, alert user and return.
-        if username:
-            flash("Username " + request.form.get("username") + " already exists.")
+        if existing_username:
+            flash("Username " + username + " already exists.")
             return redirect("/register")
         # Check that password has been entered.
         password = request.form.get("password")
@@ -214,18 +218,44 @@ def register():
         hashed = generate_password_hash(password, "sha256")
         # Submit username and hashed password to database.
         SQL = "INSERT INTO users (username, hashed_password) VALUES (:username, :hashed)"
-        data = {"username": request.form.get("username"), "hashed": hashed}
+        data = {"username": username, "hashed": hashed}
         db.execute(SQL, data)
         # Automatically log user in.
         SQL = "SELECT id FROM users WHERE username = (:username)"
-        data = {"username": request.form.get("username")}
+        data = {"username": username}
         user_id = db.execute(SQL, data).fetchall()
         session['user_id'] = user_id[0]["id"]
-        session["username"] = request.form.get("username")
+        session["username"] = username
         # Commit & close database connection.
         db_close()
         # Send user to homepage after registration and login complete.
-        flash("You have been registered successfully.")
+        flash(f"You have been registered successfully with username: {username}.")
+        return redirect("/")
+
+
+# Create a Guest user.
+@app.route("/guest")
+def guest():
+        # Submit generic guest username in order to get a unique user ID.
+        SQL = "INSERT INTO users (username) VALUES (:username)"
+        data = {"username": "guest tbc"}
+        db.execute(SQL, data)
+        # Get user ID to include the ID in the guest username.
+        SQL = "SELECT id FROM users WHERE username = (:username)"
+        data = {"username": "guest tbc"}
+        user_rows = db.execute(SQL, data).fetchone()
+        user_id = user_rows[0]
+        # Update generic guest username to include their user ID.
+        new_guest_username = f"Guest {user_id}"
+        SQL = "UPDATE users SET (username) = row(:new_guest_username) WHERE (id) = (:user_id)"
+        data = ({"new_guest_username": new_guest_username, "user_id": user_id})
+        db.execute(SQL, data)
+        # Automatically log user in.
+        session['user_id'] = user_id
+        session["username"] = new_guest_username
+        # Commit & close database connection.
+        db_close()
+        # Send user to homepage after registration and login complete.
         return redirect("/")
 
 
