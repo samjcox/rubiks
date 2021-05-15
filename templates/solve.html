@@ -9,7 +9,7 @@
 
     <h2>Solve your cube</h2>
     <p>You are currently solving Cube ID {{ session["current_cube_id"] }}.</p>
-    <p>You are currently at <b>Stage {{ progress }} of 8</b>, which will solve the <b>{{ stage_name }}</b>.</p>
+    <p>You are currently at <b>Stage {{ progress }} of 8</b>, the moves below will solve the <b>{{ stage_name }}</b>.</p>
     <div class="progress" style="height: 20px;">
         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ ((progress / 8) * 100) | int}}%" aria-valuenow="{{ ((progress / 8) * 100) | int}}" aria-valuemin="0" aria-valuemax="100">{{ ((progress / 8) * 100) | int}}%</div>
     </div>
