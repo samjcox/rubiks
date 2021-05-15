@@ -97,25 +97,67 @@
                 </p>
             </div>
             <div class="card-footer">
+                <table class="table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <td class="col-xs">Face</td>
+                            <td class="col-2">Up</td>
+                            <td class="col-2">Down</td>
+                            <td class="col-2">Left</td>
+                            <td class="col-2">Right</td>
+                            <td class="col-2">Front</td>
+                            <td class="col-2">Back</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>&#8635</td>
+                            <td>U</td>
+                            <td>D</td>
+                            <td>L</td>
+                            <td>R</td>
+                            <td>F</td>
+                            <td>B</td>
+                        </tr>
+                        <tr>
+                            <td>&#8634</td>
+                            <td>U'</td>
+                            <td>D'</td>
+                            <td>L'</td>
+                            <td>R'</td>
+                            <td>F'</td>
+                            <td>B'</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </br>
+                <p><i>Clockwise/Anti-clockwise applies as if you were looking at the face to be moved.</i></p>
 
-                <u>Cube Notation Legend:</u>
-
-                <ul class="no-bullet-list" style="font-size: 15px;">
-                    <li>U = top face clockwise.</li>
-                    <li>U' = top face anti-clockwise.</li>
-                    <li>F = front face clockwise.</li>
-                    <li>F' = front face anti-clockwise.</li>
-                    <li>R = right face clockwise.</li>
-                    <li>R' = right face anti-clockwise.</li>
-                    <li>L = left face clockwise.</li>
-                    <li>L' = left face anti-clockwise.</li>
-                    <li>B = back face clockwise.</li>
-                    <li>B' = back face anti-clockwise.</li>
-                    <li>D = bottom clockwise.</li>
-                    <li>D' = bottom anti-clockwise.</li>
-
-                </ul>
-
+                <div class="accordion" id="notation_accordian">
+                    <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Full Cube Notation Legend &#129035
+                        </button>
+                    </h5>
+                    </div>
+                    <div id="collapseOne" class="collapse collapsed" aria-labelledby="headingOne" data-parent="#notation_accordian">
+                    <ul class="no-bullet-list" style="font-size: 15px;">
+                        <li>U = upper face clockwise.</li>
+                        <li>U' = upper face anti-clockwise.</li>
+                        <li>F = front face clockwise.</li>
+                        <li>F' = front face anti-clockwise.</li>
+                        <li>R = right face clockwise.</li>
+                        <li>R' = right face anti-clockwise.</li>
+                        <li>L = left face clockwise.</li>
+                        <li>L' = left face anti-clockwise.</li>
+                        <li>B = back face clockwise.</li>
+                        <li>B' = back face anti-clockwise.</li>
+                        <li>D = down face clockwise.</li>
+                        <li>D' = down face anti-clockwise.</li>
+                    </ul>
+                    </div>
+                </div>
             </div>
 
         </div>
