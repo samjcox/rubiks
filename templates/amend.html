@@ -22,160 +22,140 @@
 
     <form action="/amend" method="post">
 
-        <button class="btn btn-primary" type="submit" onclick="loading_on()" name="save" value="save">Save & Recheck Cube</button>
+        <button class="btn btn-primary centre button-margins" type="submit" onclick="loading_on()" name="save" value="save">Save & Recheck Cube</button>
+        <!-- This container exists to hoirzontally centre the collective cube layout. -->
+        <div class="enter-cube-container">
+            <div class="enter-cube-layout">
 
-        <div class="enter-cube-layout">
+                <!-- Top left blank space -->
+                <div class="enter-cube-blank-face"></div>
 
-        <!-- Top left blank space -->
-        <div class="enter-cube-blank-face"></div>
+                <!-- Back (green centre) face -->
+                <div class="enter-cube-face">
+                    {% for square in squares[0:9] %}
+                        {% if loop.index == 5 %}
+                            <select id={{ square }} name={{ square }} class="green enter-cube-square">
+                                <option selected class="green" value="green">G</option>
+                            </select>
+                        {% else %}
+                            <select id={{ square }} name={{ square }} onchange="this.className=this.options[this.selectedIndex].className" class="{{ cube[square] }} enter-cube-square" required>
+                                <option selected value={{ cube[square] }} class={{ cube[square] }}>{{ colour_initials[cube[square]] }}</option>
+                                {% for colour in colour_initials %}
+                                    <option class="{{colour}}" value="{{colour}}">{{colour_initials[colour]}}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                    {% endfor %}
+                </div>
 
-        <!-- Back (green centre) face -->
-        <div class="enter-cube-face">
-                {% for square in squares[0:9] %}
-                {% if loop.index == 5 %}
-                    <select id={{ square }} name={{ square }} class="green enter-cube-square">
-                        <option selected class="green" value="green">Green</option>
-                    </select>
-                {% else %}
-                    <select id={{ square }} name={{ square }} onchange="this.className=this.options[this.selectedIndex].className" class="{{ cube[square] }} enter-cube-square" required>
-                        <option selected value={{ cube[square] }} class={{ cube[square] }}>{{ cube[square] }}</option>
-                        <option class="red" value="red">Red</option>
-                        <option class="green" value="green">Green</option>
-                        <option class="blue" value="blue">Blue</option>
-                        <option class="orange" value="orange">Orange</option>
-                        <option class="yellow" value="yellow">Yellow</option>
-                        <option class="white" value="white">White</option>
-                    </select>
-                {% endif %}
-                {% endfor %}
+                <!-- Top right blank space -->
+                <div class="enter-cube-blank-face"></div>
 
+                <!-- Left (orange centre) face: -->
+                <div class="enter-cube-face">
+                    {% for square in squares[9:18] %}
+                        {% if loop.index == 5 %}
+                            <select id={{ square }} name={{ square }} class="orange enter-cube-square">
+                                <option selected class="orange" value="orange">O</option>
+                            </select>
+                        {% else %}
+                            <select id={{ square }} name={{ square }} onchange="this.className=this.options[this.selectedIndex].className" class="{{ cube[square] }} enter-cube-square" required>
+                                <option selected value={{ cube[square] }} class={{ cube[square] }}>{{ colour_initials[cube[square]] }}</option>
+                                {% for colour in colour_initials %}
+                                    <option class="{{colour}}" value="{{colour}}">{{colour_initials[colour]}}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <!-- Top (Yellow centre) face: -->
+                <div class="enter-cube-face">
+                    {% for square in squares[18:27] %}
+                        {% if loop.index == 5 %}
+                            <select id={{ square }} name={{ square }} class="yellow enter-cube-square">
+                                <option selected class="yellow" value="yellow">Y</option>
+                            </select>
+                        {% else %}
+                            <select id={{ square }} name={{ square }} onchange="this.className=this.options[this.selectedIndex].className" class="{{ cube[square] }} enter-cube-square" required>
+                                <option selected value={{ cube[square] }} class={{ cube[square] }}>{{ colour_initials[cube[square]] }}</option>
+                                {% for colour in colour_initials %}
+                                    <option class="{{colour}}" value="{{colour}}">{{colour_initials[colour]}}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <!-- Right (red centre) face: -->
+                <div class="enter-cube-face">
+                    {% for square in squares[27:36] %}
+                        {% if loop.index == 5 %}
+                            <select id={{ square }} name={{ square }} class="red enter-cube-square">
+                                <option selected class="red" value="red">R</option>
+                            </select>
+                        {% else %}
+                            <select id={{ square }} name={{ square }} onchange="this.className=this.options[this.selectedIndex].className" class="{{ cube[square] }} enter-cube-square" required>
+                                <option selected value={{ cube[square] }} class={{ cube[square] }}>{{ colour_initials[cube[square]] }}</option>
+                                {% for colour in colour_initials %}
+                                    <option class="{{colour}}" value="{{colour}}">{{colour_initials[colour]}}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <!-- Middle left blank space -->
+                <div class="enter-cube-blank-face"></div>
+
+                <!-- Front (blue centre) face: -->
+                <div class="enter-cube-face">
+                    {% for square in squares[36:45] %}
+                        {% if loop.index == 5 %}
+                            <select id={{ square }} name={{ square }} class="blue enter-cube-square">
+                                <option selected class="blue" value="blue">B</option>
+                            </select>
+                        {% else %}
+                            <select id={{ square }} name={{ square }} onchange="this.className=this.options[this.selectedIndex].className" class="{{ cube[square] }} enter-cube-square" required>
+                                <option selected value={{ cube[square] }} class={{ cube[square] }}>{{ colour_initials[cube[square]] }}</option>
+                                {% for colour in colour_initials %}
+                                    <option class="{{colour}}" value="{{colour}}">{{colour_initials[colour]}}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <!-- Middle right blank space -->
+                <div class="enter-cube-blank-face"></div>
+
+                <!-- Bottom left blank space -->
+                <div class="enter-cube-blank-face"></div>
+
+                <!-- Bottom (white centre) face: -->
+                <div class="enter-cube-face">
+                    {% for square in squares[45:54] %}
+                        {% if loop.index == 5 %}
+                            <select id={{ square }} name={{ square }} class="white enter-cube-square">
+                                <option selected class="white" value="white">W</option>
+                            </select>
+                        {% else %}
+                            <select id={{ square }} name={{ square }} onchange="this.className=this.options[this.selectedIndex].className" class="{{ cube[square] }} enter-cube-square" required>
+                                <option selected value={{ cube[square] }} class={{ cube[square] }}>{{ colour_initials[cube[square]] }}</option>
+                                {% for colour in colour_initials %}
+                                    <option class="{{colour}}" value="{{colour}}">{{colour_initials[colour]}}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <!-- Bottom right blank space -->
+                <div class="enter-cube-blank-face"></div>
+            </div>
         </div>
-
-        <!-- Top right blank space -->
-        <div class="enter-cube-blank-face"></div>
-
-        <!-- Left (orange centre) face: -->
-        <div class="enter-cube-face">
-            {% for square in squares[9:18] %}
-            {% if loop.index == 5 %}
-                <select id={{ square }} name={{ square }} class="orange enter-cube-square">
-                    <option selected class="orange" value="orange">Orange</option>
-                </select>
-            {% else %}
-                <select id={{ square }} name={{ square }} onchange="this.className=this.options[this.selectedIndex].className" class="{{ cube[square] }} enter-cube-square" required>
-                    <option selected value={{ cube[square] }} class={{ cube[square] }}>{{ cube[square] }}</option>
-                    <option class="red" value="red">Red</option>
-                    <option class="green" value="green">Green</option>
-                    <option class="blue" value="blue">Blue</option>
-                    <option class="orange" value="orange">Orange</option>
-                    <option class="yellow" value="yellow">Yellow</option>
-                    <option class="white" value="white">White</option>
-                </select>
-            {% endif %}
-            {% endfor %}
-        </div>
-
-        <!-- Top (Yellow centre) face: -->
-        <div class="enter-cube-face">
-            {% for square in squares[18:27] %}
-            {% if loop.index == 5 %}
-                <select id={{ square }} name={{ square }} class="yellow enter-cube-square">
-                    <option selected class="yellow" value="yellow">Yellow</option>
-                </select>
-            {% else %}
-                <select id={{ square }} name={{ square }} onchange="this.className=this.options[this.selectedIndex].className" class="{{ cube[square] }} enter-cube-square" required>
-                    <option selected value={{ cube[square] }} class={{ cube[square] }}>{{ cube[square] }}</option>
-                    <option class="red" value="red">Red</option>
-                    <option class="green" value="green">Green</option>
-                    <option class="blue" value="blue">Blue</option>
-                    <option class="orange" value="orange">Orange</option>
-                    <option class="yellow" value="yellow">Yellow</option>
-                    <option class="white" value="white">White</option>
-                </select>
-            {% endif %}
-            {% endfor %}
-        </div>
-
-        <!-- Right (red centre) face: -->
-        <div class="enter-cube-face">
-            {% for square in squares[27:36] %}
-            {% if loop.index == 5 %}
-                <select id={{ square }} name={{ square }} class="red enter-cube-square">
-                    <option selected class="red" value="red">Red</option>
-                </select>
-            {% else %}
-                <select id={{ square }} name={{ square }} onchange="this.className=this.options[this.selectedIndex].className" class="{{ cube[square] }} enter-cube-square" required>
-                    <option selected value={{ cube[square] }} class={{ cube[square] }}>{{ cube[square] }}</option>
-                    <option class="red" value="red">Red</option>
-                    <option class="green" value="green">Green</option>
-                    <option class="blue" value="blue">Blue</option>
-                    <option class="orange" value="orange">Orange</option>
-                    <option class="yellow" value="yellow">Yellow</option>
-                    <option class="white" value="white">White</option>
-                </select>
-            {% endif %}
-            {% endfor %}
-        </div>
-
-         <!-- Middle left blank space -->
-        <div class="enter-cube-blank-face"></div>
-
-        <!-- Front (blue centre) face: -->
-        <div class="enter-cube-face">
-            {% for square in squares[36:45] %}
-            {% if loop.index == 5 %}
-                <select id={{ square }} name={{ square }} class="blue enter-cube-square">
-                    <option selected class="blue" value="blue">Blue</option>
-                </select>
-            {% else %}
-                <select id={{ square }} name={{ square }} onchange="this.className=this.options[this.selectedIndex].className" class="{{ cube[square] }} enter-cube-square" required>
-                    <option selected value={{ cube[square] }} class={{ cube[square] }}>{{ cube[square] }}</option>
-                    <option class="red" value="red">Red</option>
-                    <option class="green" value="green">Green</option>
-                    <option class="blue" value="blue">Blue</option>
-                    <option class="orange" value="orange">Orange</option>
-                    <option class="yellow" value="yellow">Yellow</option>
-                    <option class="white" value="white">White</option>
-                </select>
-            {% endif %}
-            {% endfor %}
-        </div>
-
-         <!-- Middle right blank space -->
-        <div class="enter-cube-blank-face"></div>
-
-        <!-- Bottom left blank space -->
-        <div class="enter-cube-blank-face"></div>
-
-        <!-- Bottom (white centre) face: -->
-        <div class="enter-cube-face">
-            {% for square in squares[45:54] %}
-            {% if loop.index == 5 %}
-                <select id={{ square }} name={{ square }} class="white enter-cube-square">
-                    <option selected class="white" value="white">White</option>
-                </select>
-            {% else %}
-                <select id={{ square }} name={{ square }} onchange="this.className=this.options[this.selectedIndex].className" class="{{ cube[square] }} enter-cube-square" required>
-                    <option selected value={{ cube[square] }} class={{ cube[square] }}>{{ cube[square] }}</option>
-                    <option class="red" value="red">Red</option>
-                    <option class="green" value="green">Green</option>
-                    <option class="blue" value="blue">Blue</option>
-                    <option class="orange" value="orange">Orange</option>
-                    <option class="yellow" value="yellow">Yellow</option>
-                    <option class="white" value="white">White</option>
-                </select>
-            {% endif %}
-            {% endfor %}
-        </div>
-
-        <!-- Bottom right blank space -->
-        <div class="enter-cube-blank-face"></div>
-
-
-        </div>
-
-
-        <button class="btn btn-primary" type="submit" onclick="loading_on()" name="save" value="save">Save & Recheck Cube</button>
+        
+        <button class="btn btn-primary centre button-margins" type="submit" onclick="loading_on()" name="save" value="save">Save & Recheck Cube</button>
         </form>
 
 {% endblock %}

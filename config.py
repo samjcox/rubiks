@@ -66,6 +66,12 @@ squares = (
 # Define list of colours.
 colours = ('red', 'blue', 'green', 'yellow', 'orange', 'white')
 
+# Define first initial of colours for Enter/Amend pages.
+colour_initials = {
+    'red':'R', 'blue':'B', 'green':'G',
+    'yellow':'Y', 'orange':'O', 'white':'W'
+    }
+
 # Define a solved cube.
 solved_cube = {
     'bbr':'green', 'bbm':'green', 'bbl':'green',

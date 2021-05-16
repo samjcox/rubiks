@@ -25,6 +25,10 @@
     padding: 10px;
 }
 
+.button-margins {
+    margin: 10px auto;
+}
+
 .text_and_button_grid {
     display: grid;
     grid-template-rows: auto;
@@ -76,33 +80,41 @@
     }
 
 /* Amend / enter cube formatting */
+    .enter-cube-container {
+        display: flex;
+        justify-content: center;
+    }
+
     .enter-cube-layout {
         display: grid;
-        grid-template-rows: auto auto auto auto;
-        grid-template-columns: 266px 266px 266px;
+        grid-template-rows: 125px 125px 125px 125px;
+        grid-template-columns: 125px 125px 125px;
     }
 
     .enter-cube-blank-face {
         background-color: white;
-        margin: 10px;
+        margin: 3px;
     }
 
     .enter-cube-face {
         display: grid;
-        grid-template-columns: 75px 75px 75px;
-        grid-template-rows: 75px 75px 75px;
-        padding: 5px;
+        grid-template-columns: 37px 37px 37px;
+        grid-template-rows: 37px 37px 37px;
+        padding: 2px;
         background-color: black;
-        margin: 10px;
-        grid-gap: 5px;
+        margin: 3px;
+        grid-gap: 2px;
     }
 
     .enter-cube-square {
         border: 0px;
         text-transform: capitalize;
+        text-align: center;
+        font-size: 13px;
+        padding: 0px; /* this is to centre text vertically, once size of boxes is finalised */
     }
 
-/* View cube formatting */
+/* View cube formatting (as on solve pages) */
     .cube-card {
         min-width: 250px;
     }
@@ -137,6 +149,10 @@
         grid-gap: 2px;
     }
 
+    .view-cube-text{
+        font-size: 13px;
+    }
+
     .view-cube-square {
         border: 0px;
         text-transform: capitalize;
@@ -169,6 +185,7 @@
     .red {
         background: red;
         color: black;
+        font-size: 13px;
     }
 
     option[value=green] {
@@ -178,6 +195,7 @@
     .green {
         background: green;
         color: black;
+        font-size: 13px;
     }
 
     option[value=blue] {
@@ -188,6 +206,7 @@
     .blue {
         background: blue;
         color: white;
+        font-size: 13px;
     }
 
     option[value=yellow] {
@@ -197,6 +216,7 @@
     .yellow {
         background: yellow;
         color: black;
+        font-size: 13px;
     }
 
     option[value=white] {
@@ -206,6 +226,7 @@
     .white {
         background: white;
         color: black;
+        font-size: 13px;
     }
 
     option[value=orange] {
@@ -215,6 +236,7 @@
     .orange {
         background: orange;
         color: black;
+        font-size: 13px;
     }
 
     option[value=grey] {
@@ -224,4 +246,5 @@
     .grey {
         background: grey;
         color: black;
+        font-size: 13px;
     }
