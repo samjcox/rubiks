@@ -591,15 +591,17 @@ def amend():
         # Update database with user input from form.
         # Note that as the input to the below SQL query is hard-coded,
         # there should be no risk of SQL injection attack.
+        cube = session["cube"]
         for square in config.squares:
             square_colour = request.form.get(square)
-            # ?!?! TODO error here to be resolved.
-            session["cube"][square] = square_colour
+            cube[square] = square_colour
             SQL = f"UPDATE cubes SET {square} = (:colour) WHERE (id) = (:cube_id);"
-            data = ({"colour": session['cube'][square], "cube_id": session["current_cube_id"]})
+            data = ({"colour": square_colour, "cube_id": session["current_cube_id"]})
             db.execute(SQL, data)
         # Commit & close database connection.
         db_close()
+        # Update session cube & return cube check:
+        session["cube"] = cube
         return check_cube()
 
 
