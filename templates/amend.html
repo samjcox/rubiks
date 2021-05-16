@@ -13,9 +13,13 @@
     <p>Errors found are as follows:</p>
 
     <ul>
-        {% for error in session["errors"] %}
-            <li>{{ error }}</li>
-        {% endfor %}
+        {% if session["errors"] %}
+            {% for error in session["errors"] %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        {% else %}
+            <li>...Waiting for submission to check for errors...</li>
+        {% endif %}
     </ul>
 
     <h2>Modify cube below</h2>
