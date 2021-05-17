@@ -19,13 +19,14 @@ Python, HTML, JavaScript, Flask, Jinja, CSS, Bootstrap.
 - To test/experience the website, the user can also ask the web app to generate a random cube.  This is done by taking a solved cube and making random moves on the cube.
 - If the user has a solved cube, the web app includes a Randomiser feature to give the user a number of random moves they can follow to randomise their own cube, ready for solving again.
 - As the user progresses through each stage, the site shows the user how far through the solve process they currently are (using 8 stages, include nick names and a progress bar).
+- The user has the option to create a registration to save their historic cubes, or use a guest account if they dont want to save their cubes.
 
 
 ## Detailed features
 - Each user can store their own cubes in the database, with the ability to amend, copy and delete individual cubes from the database.
 - You can delete all cubes from the database with one function; this function does include a confirmation message displayed in an overlay.
-- There is a Loading overlay that appears when certain actions are started.  It is however updating the database that is taking the most time, not the calculation of cube moves.  Note that when running the app locally (i.e. when using VSCode) the database update is very quick (potentially no need for a loading screen) however when previously working on CS50 IDE the database update took a noticable time (approx 3-4 seconds).  The loading screen has been left in for now, however maybe this could be removed after testing on Heroku (future work) if the database .
-- The database is accessed using the sqlite3 module (after originally using the CS50 SQL module).
+- There is a Loading overlay that appears when certain actions are started.  It is however updating the database that is taking the most time, not the calculation of cube moves.  Note that when running the app locally (i.e. when using VSCode) the database update is very quick (potentially no need for a loading screen) however when working on Heroku the time taken is noticable.
+- The database is accessed using SQLAlchemy(Postgres) after previously using sqlite3(SQLite).
 - The moves calculated would likley originally comprise of a number of opposite moves followed after each other, and also triple rotations (equal to one rotation in the opposite direction), so the web app simplifies the required list of moves to delete opposite moves and replace triple moves with the opposite move.
 - Includes a feature to make 100,000 random moves on a cube just to demonstrate that this wouldnt solve the rubiks cube.
 - Once the cube is solved, a celebration page appears inviting the user to use the randomiser to shuffle their cube and start again.
@@ -34,7 +35,8 @@ Python, HTML, JavaScript, Flask, Jinja, CSS, Bootstrap.
 ## Files & Structure
 ### Project folder
 - app.py - main application include general functions.
-- helpers.py - contains detailed cube move algorithms and solve algorithms.
+- helpers.py - contains algorithms to determine stage of solving, make next move etc.
+- solvers.py - contains detailed algorithms of what moves to make at what stage.
 - config.py - contains repeatedly used lists and dictionaries.
 - rubiks.db - database contains two tables.  The 'users' table includes username and password. The 'cubes' table includes the current state of all cubes.  More details of database structure included below.
 - requirements.txt - lists packages used.
@@ -66,7 +68,7 @@ Python, HTML, JavaScript, Flask, Jinja, CSS, Bootstrap.
 'cubes' table:
 - id - unique id per cube.
 - user_id - the id of the user who created this cube (users can only get access to their own cubes).
-- check - notes if the cube has been correctly entered, or if there are errors that need to be resolved by the user before it can be solved.
+- intput_check - notes if the cube has been correctly entered, or if there are errors that need to be resolved by the user before it can be solved.
 - each square of the cube is listed as a seperate column in the table - 54 columns (one for each square on the cube) each of which stores the current colour of that square.  This is updated between each stage of solving, allowing the user to close the application and not lose their progress.
 
 
@@ -77,9 +79,10 @@ Python, HTML, JavaScript, Flask, Jinja, CSS, Bootstrap.
 
 
 ## Future improvements / works
-- Move the app to Heroku. This would allow real-world access to the app for real-world testing and usage. 
 - Improve method of database updates.  The app works with the square/colours as a dictionary.  There is currently one column in the SQL table per square of the cube (54 columns for colour of squares). Consider storing all the squares/colours in one column which will be just one column to update, which is expected to be more efficient. This could be done by storing the squares/colours in the SQL table as a string - however this would introduce the extra step to "encode/decode" the dictionary to a string.  This encode/decode may be more efficient than 54 SQL updates.  However the update time is currently imperceptoble to the user, more testing to be done once uploaded to Heroku.
 - Automatic cube entry using image recognition.  Entering a cube into the page is quite time consuming, so it would be much more convenient to hold your cube up to the webcam for automatic entry of cube into the web app.
 - Use alternative solve algorithm (instead of being human-memorisable) to reduce number of moves required to solve the cube.  This will however require a lot more processing power.
 - Consider adding a 3D visualisation of the cube at each stage in addition to the 2D "unfolded" representation currently used.
 - Improve checking of manual cube entry.  At the moment the system checks there are the correct number of colours in the square as a limited method of checking for mistakes.  If however the user randomly enters colours into the cube and totals the correct number of each colour, this will probably not be solvable but wont be flagged as an error by the checking algorithm.
+- Improve manual cube entry method on small devices - while the cube arrangement now fits on a small screen, when a mobile device adds dropdown icons you cannot clearly read the letters of each square.  This displays well on a PC when simulating a mobile device in developer mode, but not when the actual device renders the dropdown.  This is to be improved in the future.
+- Auto delete old cubes and cube count limit - to prevent the database growing too large, there should be a limit on how many cubes each user can create.  There should also be an automatic method of deleting old cubes (both from Guest accounts and unused cubes).
